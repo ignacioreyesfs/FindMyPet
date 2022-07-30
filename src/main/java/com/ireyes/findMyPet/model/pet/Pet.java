@@ -1,10 +1,35 @@
 package com.ireyes.findMyPet.model.pet;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "pet")
 public class Pet {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	private String name;
 	private int age;
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+	@JoinColumn(name="breed_id")
 	private Breed breed;
 	private String description;
+	
+	public Pet() {}
+	public Pet(String name, int age, Breed breed, String description) {
+		this.name = name;
+		this.age = age;
+		this.breed = breed;
+		this.description = description;
+	}
 	
 	public String getName() {
 		return name;
