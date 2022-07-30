@@ -1,7 +1,11 @@
 package com.ireyes.findMyPet.model.pet;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +26,10 @@ public class Pet {
 	@JoinColumn(name="breed_id")
 	private Breed breed;
 	private String description;
+	@ElementCollection
+	@CollectionTable(name="pet_images", joinColumns = @JoinColumn(name="pet_id"))
+	@Column(name="image")
+	private List<String> imagesFilenames;
 	
 	public Pet() {}
 	public Pet(String name, int age, Breed breed, String description) {
