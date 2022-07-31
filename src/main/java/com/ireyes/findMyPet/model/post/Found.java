@@ -8,17 +8,8 @@ import javax.persistence.Enumerated;
 @Entity
 @DiscriminatorValue("found")
 public class Found extends Post{
-	private boolean relocationNeeded;
 	@Enumerated(EnumType.STRING)
 	private RelocationUrgency relocationUrgency;
-
-	public boolean isRelocationNeeded() {
-		return relocationNeeded;
-	}
-
-	public void setRelocationNeeded(boolean relocationNeeded) {
-		this.relocationNeeded = relocationNeeded;
-	}
 
 	public RelocationUrgency getRelocationUrgency() {
 		return relocationUrgency;
