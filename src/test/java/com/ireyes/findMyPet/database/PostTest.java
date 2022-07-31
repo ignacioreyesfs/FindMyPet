@@ -2,6 +2,9 @@ package com.ireyes.findMyPet.database;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Calendar;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,40 +28,63 @@ public class PostTest {
 	@Autowired
 	private SearchRepository searchRepository;
 	
-	@Test
-	public void findByPostTypeTest() {
-		Found found = new Found();
-		Search search = new Search();
+	@BeforeEach
+	public void init() {
+		Calendar calendar = Calendar.getInstance();
 		
-		postRepository.save(found);
-		postRepository.saveAndFlush(search);
-		
-		assertThat(postRepository.findAll().size()).isEqualTo(2);
-		assertThat(foundRepository.findAll()).containsExactly(found);
-		assertThat(searchRepository.findAll()).containsExactly(search);
-	}
-	
-	@Test
-	public void findByBreedName() {
 		PetType dog = new PetType("dog");
+		
 		Breed poodle = new Breed("poodle", dog);
 		Breed caneCorso = new Breed("cane corso", dog);
+		
 		Pet tommy = new Pet("tommy", 1, poodle, "");
 		Pet dora = new Pet("dora", 9, caneCorso, "");
 		Pet etzio = new Pet("etzio", 7, poodle, "");
+		
 		Found tommyFound = new Found();
 		tommyFound.setPet(tommy);
+		calendar.set(2022, Calendar.JANUARY, 1);
+		tommyFound.setDate(calendar.getTime());
 		Found doraFound = new Found();
 		doraFound.setPet(dora);
+		calendar.set(2022, Calendar.MARCH, 1);
+		doraFound.setDate(calendar.getTime());
 		Found etzioFound = new Found();
 		etzioFound.setPet(etzio);
+		calendar.set(2022, Calendar.FEBRUARY, 1);
+		etzioFound.setDate(calendar.getTime());
+		Search doraSearch = new Search();
+		doraSearch.setPet(dora);
+		calendar.set(2022, Calendar.JUNE, 1);
+		doraSearch.setDate(calendar.getTime());
 		
 		postRepository.save(tommyFound);
 		postRepository.save(doraFound);
+		postRepository.save(doraSearch);
 		postRepository.saveAndFlush(etzioFound);
-		
-		assertThat(foundRepository.findByPet_Breed_Name("poodle")).containsExactly(tommyFound, etzioFound);
+	}
+	
+	@Test
+	public void findByPostTypeTest() {
+		assertThat(postRepository.findAll().size()).isEqualTo(4);
+		assertThat(foundRepository.findAll().size()).isEqualTo(3);
+		assertThat(searchRepository.findAll().size()).isEqualTo(1);
+	}
+	
+	@Test
+	public void findByBreedName() {		
+		assertThat(foundRepository.findByPet_Breed_Name("poodle"))
+				.allMatch(found -> found.getPet().getBreed().getName().equals("poodle"));
 		assertThat(searchRepository.findByPet_Breed_Name("poodle").size()).isEqualTo(0);
+	}
+	
+	@Test
+	public void findSinceDate() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2022, Calendar.FEBRUARY, 1);
+		assertThat(postRepository.findSinceDate(calendar.getTime()).size()).isEqualTo(3);
+		calendar.set(2022, Calendar.FEBRUARY, 2);
+		assertThat(postRepository.findSinceDate(calendar.getTime()).size()).isEqualTo(2);
 	}
 	
 }

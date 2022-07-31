@@ -1,5 +1,6 @@
 package com.ireyes.findMyPet.model.post;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,6 +19,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.ireyes.findMyPet.model.pet.Pet;
 import com.ireyes.findMyPet.model.user.Contact;
@@ -44,6 +47,8 @@ public abstract class Post {
 				joinColumns = @JoinColumn(name="post_id"))
 	@Column(name="contact")
 	private List<Contact> alternativeContacts;
+	@Temporal(TemporalType.DATE)
+	private Date date;
 	
 	// GETTERS AND SETTERS
 	
@@ -77,4 +82,11 @@ public abstract class Post {
 	public void setAlternativeContacts(List<Contact> alternativeContacts) {
 		this.alternativeContacts = alternativeContacts;
 	}
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
 }
