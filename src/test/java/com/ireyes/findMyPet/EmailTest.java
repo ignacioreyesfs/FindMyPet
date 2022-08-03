@@ -1,4 +1,4 @@
-package com.ireyes.findMyPet.email;
+package com.ireyes.findMyPet;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 

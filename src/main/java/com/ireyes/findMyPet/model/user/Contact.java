@@ -1,5 +1,6 @@
 package com.ireyes.findMyPet.model.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +17,7 @@ public class Contact {
 	private Long id;
 	@Enumerated(EnumType.STRING)
 	private ContactType type;
+	@Column(name="contact_value")
 	private String value;
 	
 	// GETTERS AND SETTERS

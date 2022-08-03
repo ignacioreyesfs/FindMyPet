@@ -39,7 +39,7 @@ public abstract class Post {
 	private String description;
 	@Embedded
 	private Location location;
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name="user_id")
 	private User user;
 	@ElementCollection
