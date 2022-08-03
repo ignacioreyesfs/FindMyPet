@@ -7,6 +7,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +27,7 @@ public class Pet {
 	@JoinColumn(name="breed_id")
 	private Breed breed;
 	private String description;
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.LAZY)
 	@CollectionTable(name="pet_images", joinColumns = @JoinColumn(name="pet_id"))
 	@Column(name="image")
 	private List<String> imagesFilenames;
