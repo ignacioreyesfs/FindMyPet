@@ -3,6 +3,7 @@ package com.ireyes.findMyPet.controller.auth;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,26 +13,31 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.user.User;
 import com.ireyes.findMyPet.service.UserService;
 
 @Controller
-public class AuthController {
+public class RegistrationController {
 	@Autowired
 	private UserService userService;
 	private String signUpForm = "sign-up";
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	@GetMapping("/register")
-	public String registerForm(Model model) {
+	public String registerForm(Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) {
+			return "redirect:/";
+		}
+		
 		model.addAttribute("user", new UserForm());
 		return signUpForm;
 	}
 	
 	@PostMapping("/register")
 	public String showRegister(@Valid @ModelAttribute("user") UserForm userForm,
-			BindingResult br, Model model) {
+			BindingResult br, Model model, RedirectAttributes redirect) {
 		if(br.hasErrors()) {
 			return signUpForm;
 		}
@@ -52,7 +58,7 @@ public class AuthController {
 		userService.save(userForm);
 		logger.info("Created user " + userForm.getUsername());
 		
-		model.addAttribute("userCreated", true);
+		redirect.addFlashAttribute("userCreated", true);
 		return "redirect:/login";
 	}
 }
