@@ -20,6 +20,13 @@ public class Contact {
 	@Column(name="contact_value")
 	private String value;
 	
+	public Contact() {}
+	
+	public Contact(ContactType type, String value) {
+		this.type = type;
+		this.value = value;
+	}
+	
 	// GETTERS AND SETTERS
 	
 	public ContactType getType() {
