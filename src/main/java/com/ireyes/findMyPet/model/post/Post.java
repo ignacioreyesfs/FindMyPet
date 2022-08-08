@@ -8,7 +8,6 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -38,7 +37,8 @@ public abstract class Post {
 	@OneToOne(cascade = {CascadeType.ALL})
 	private Pet pet;
 	private String description;
-	@Embedded
+	@ManyToOne
+	@JoinColumn(name="location_id")
 	private Location location;
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id")
