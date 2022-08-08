@@ -3,9 +3,9 @@ package com.ireyes.findMyPet.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ireyes.findMyPet.model.user.Role;
+import com.ireyes.findMyPet.model.pet.Breed;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long>{
-	public Role findByName(String name);
+public interface BreedRepository extends JpaRepository<Breed, Long>{
+
 }

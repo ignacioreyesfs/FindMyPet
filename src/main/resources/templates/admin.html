@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Admin Panel</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+	<div class="list-group">
+	  <a th:href="@{/admin/petType/new}" class="list-group-item list-group-item-action">Create Pet Type</a>
+	  <a th:href="@{/admin/breed/new}" class="list-group-item list-group-item-action">Create Pet Breed</a>
+	  <a th:href="@{/admin/location/new}" class="list-group-item list-group-item-action">Create Location</a>
+	</div>
+</body>
+</html>

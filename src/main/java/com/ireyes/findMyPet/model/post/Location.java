@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="location")
@@ -12,26 +13,36 @@ public class Location {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@NotBlank
 	private String country;
-	private String province;
-	private String city;
+	@NotBlank
+	private String region;
+	@NotBlank
+	private String subRegion;
 	
+	// GETTERS AND SETTERS
 	public String getCountry() {
 		return country;
 	}
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public String getProvince() {
-		return province;
+	public Long getId() {
+		return id;
 	}
-	public void setProvince(String province) {
-		this.province = province;
+	public void setId(Long id) {
+		this.id = id;
 	}
-	public String getCity() {
-		return city;
+	public String getRegion() {
+		return region;
 	}
-	public void setCity(String city) {
-		this.city = city;
+	public void setRegion(String region) {
+		this.region = region;
+	}
+	public String getSubRegion() {
+		return subRegion;
+	}
+	public void setSubRegion(String subRegion) {
+		this.subRegion = subRegion;
 	}
 }
