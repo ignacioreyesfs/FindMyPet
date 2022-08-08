@@ -35,7 +35,9 @@ public class SecurityConfig{
 					.successHandler(authSucessHandler)
 					.permitAll()
 				.and()
-				.logout().permitAll();
+				.logout()
+					.logoutSuccessUrl("/")
+					.permitAll();
 		
 		return http.build();
 	}
