@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -39,6 +40,11 @@ public class PostService {
 	@Transactional
 	public Page<Post> findAll(Pageable pagination){
 		return postRepo.findAll(pagination);
+	}
+	
+	@Transactional
+	public Optional<Post> findById(Long id){
+		return postRepo.findById(id);
 	}
 	
 	@Transactional

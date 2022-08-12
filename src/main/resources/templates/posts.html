@@ -86,7 +86,7 @@
 		</div>
 		<div class="col-sm-4" th:each="post: ${posts}">
 			<div class="card" style="width: 18rem;">
-			  <img class="card-img-top" th:src="@{${'/pet/image/' + post.pet.imagesFilenames[0]}}" alt="Card image cap">
+			  <img class="card-img-top" th:src="@{${'/pet/image/' + post.pet.imagesFilenames[0]}}" alt="Pet image">
 			  <div class="card-body">
 			    <h5 class="card-title" th:text="${post.class.simpleName}"></h5>
 			  </div>
