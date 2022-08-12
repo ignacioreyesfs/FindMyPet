@@ -1,13 +1,9 @@
 package com.ireyes.findMyPet.model.post;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,7 +19,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.ireyes.findMyPet.model.pet.Pet;
-import com.ireyes.findMyPet.model.user.Contact;
 import com.ireyes.findMyPet.model.user.User;
 
 @Entity
@@ -43,11 +38,6 @@ public abstract class Post {
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id")
 	private User user;
-	@ElementCollection(fetch = FetchType.LAZY)
-	@CollectionTable(name="post_alternativeContacts",
-				joinColumns = @JoinColumn(name="post_id"))
-	@Column(name="contact")
-	private List<Contact> alternativeContacts;
 	@Temporal(TemporalType.DATE)
 	private Date date;
 	
@@ -77,17 +67,17 @@ public abstract class Post {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public List<Contact> getAlternativeContacts() {
-		return alternativeContacts;
-	}
-	public void setAlternativeContacts(List<Contact> alternativeContacts) {
-		this.alternativeContacts = alternativeContacts;
-	}
 	public Date getDate() {
 		return date;
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 }

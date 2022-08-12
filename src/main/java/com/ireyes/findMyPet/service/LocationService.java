@@ -1,5 +1,7 @@
 package com.ireyes.findMyPet.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,17 @@ public class LocationService {
 		location.setRegion(location.getRegion().toUpperCase());
 		location.setSubRegion(location.getSubRegion().toUpperCase());
 		return locationRepo.save(location);
+	}
+	
+	public List<String> findAllCountries(){
+		return locationRepo.findAllCountries();
+	}
+	
+	public List<String> findRegionsByCountry(String country){
+		return locationRepo.findRegionsByCountry(country);
+	}
+	
+	public List<Location> findByCountryAndRegion(String country, String region){
+		return locationRepo.findByCountryAndRegion(country, region);
 	}
 }

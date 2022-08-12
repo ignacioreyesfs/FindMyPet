@@ -1,5 +1,6 @@
 package com.ireyes.findMyPet.model.pet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -32,13 +33,26 @@ public class Pet {
 	@Column(name="image")
 	private List<String> imagesFilenames;
 	
-	public Pet() {}
+	public Pet() {
+		imagesFilenames = new ArrayList<>();
+	}
 	public Pet(String name, int age, Breed breed, String description) {
+		this();
 		this.name = name;
 		this.age = age;
 		this.breed = breed;
 		this.description = description;
 	}
+	
+	public void addImageFilename(String filename) {
+		imagesFilenames.add(filename);
+	}
+	
+	public void removeImageFilename(String filename) {
+		imagesFilenames.remove(filename);
+	}
+	
+	// GETTERS AND SETTERS
 	
 	public String getName() {
 		return name;
@@ -63,5 +77,11 @@ public class Pet {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public Long getId() {
+		return id;
+	}
+	public List<String> getImagesFilenames() {
+		return imagesFilenames;
 	}
 }

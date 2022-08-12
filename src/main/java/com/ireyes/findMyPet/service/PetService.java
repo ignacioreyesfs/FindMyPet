@@ -71,4 +71,9 @@ public class PetService {
 		return breedRepo.save(breed);
 	}
 	
+	@Transactional
+	public List<Breed> findBreedByPetType_Name(String petType){
+		return breedRepo.findBreedByPetType_Name(petType);
+	}
+	
 }

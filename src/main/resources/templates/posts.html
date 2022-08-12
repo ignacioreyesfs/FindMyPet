@@ -5,31 +5,118 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Posts</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/posts.css}">
 </head>
 <body>
 
- <form th:action="@{/posts}">
-  <div class="form-group">
-	  <label for="postType">Post type:</label>
-	  <select class="form-control" id="postType" th:name="postType">
-	  	<option>All</option>
-	    <option>Search</option>
-	    <option>Found</option>
-	  </select>
-  </div>
-  <div class="form-group">
-	  <label for="petType">Pet type:</label>
-	  <select class="form-control" id="petType" th:name="petType">
-	  	<option>All</option>
-	    <option th:each="petType: ${petTypes}" th:value="${petType.id}" th:text="${petType.name}"></option>
-	  </select>
-  </div>
-  <div class="checkbox">
-    <label><input type="checkbox"> Remember me</label>
-  </div>
-  <button type="submit" class="btn btn-default">Submit</button>
-</form> 
+<div class="container">
+ 	<div th:if="${postCreated}" class="alert alert-success col-xs-offset-1 col-xs-10">
+		<span>Post created successfully</span>
+	</div>
+	<a class="btn btn-primary" th:href="@{/posts/new}" role="button" style="margin:10px 0 10px 0">Create Post</a>
 
+<form th:action="@{/posts}">
+  <fieldset>
+	  <legend>Search filters</legend>
+	  <div class="input-group mb-3">
+		  <span class="input-group-text">Post type</span>
+		  <select class="form-control" id="postType" th:name="postType" th:field="${filter.postType}">
+		  	<option value="">All</option>
+		    <option value="search">Search</option>
+		    <option value="found">Found</option>
+		  </select>
+	  </div>
+	  <div class="input-group mb-3">
+  		  <span class="input-group-text">Pet type</span>
+		  <select class="form-control" id="petType" th:name="petType" th:field="${filter.petType}">
+		  	<option value="">All</option>
+		    <option th:each="petType: ${petTypes}" th:value="${petType.name}" th:text="${petType.name}"></option>
+		  </select>
+	  </div>
+	  <div class="input-group mb-3">
+		  <span class="input-group-text">Breed</span>
+		  <select class="form-control" id="breed" th:name="breed" th:field="${filter.breed}">
+		  </select>
+	  </div>
+	  <div class="input-group mb-3">
+		  <span class="input-group-text">Country</span>
+		  <select class="form-control" id="country" th:field="${filter.country}">
+		  	<option value="">All</option>
+		    <option th:each="country: ${countries}" th:value="${country}" th:text="${country}"></option>
+		  </select>
+	  </div>
+	  <div class="input-group mb-3">
+		  <span class="input-group-text">Province</span>
+		  <select class="form-control" id="region" th:name="region" th:field="${filter.region}">
+		  </select>
+	  </div>
+	  <div class="input-group mb-3">
+		  <span class="input-group-text">Area</span>
+		  <select class="form-control" id="subregion" th:name="subregion"
+		  		th:field="${filter.subRegion}">
+		  </select>
+	  </div>
+	  
+	  <div class="input-group mb-3">
+		  <span class="input-group-text">Date from</span>
+		  <input id="date" class="form-control" type="date" th:name="date" th:field="${filter.dateFrom}"/>
+	  </div>
+	  
+	  <div class="input-group mb-3" hidden id="foundGroup">
+		  <span class="input-group-text">Relocation Urgency</span>
+		  <select class="form-control" id="relocation" th:name="relocation"
+		  		th:field="${filter.relocation}">
+		  	<option value="">All</option>
+		  	<option th:each="relocation: ${relocations}" th:value="${relocation}" th:text="${relocation}"></option>
+		  </select>
+	  </div>
+	  
+	  <button type="submit" class="btn btn-default">Search</button>
+  </fieldset>
+</form>
+<a th:href="@{/posts}" class="btn btn-default">Clear filters</a>
+</div>
 
+<div class="container">
+	<h3>Results</h3>
+	<div class="row">
+		<div class="container" style="text-align: center;">
+			<h4 th:if="${posts == null || posts.size() <= 0}" style="justify-content: center;">No posts</h4>
+		</div>
+		<div class="col-sm-4" th:each="post: ${posts}">
+			<div class="card" style="width: 18rem;">
+			  <img class="card-img-top" th:src="@{${'/pet/image/' + post.pet.imagesFilenames[0]}}" alt="Card image cap">
+			  <div class="card-body">
+			    <h5 class="card-title" th:text="${post.class.simpleName}"></h5>
+			  </div>
+			  <ul class="list-group list-group-flush">
+			    <li class="list-group-item" th:text="${'TYPE: ' + post.pet.breed.petType.name}"></li>
+			    <li class="list-group-item" th:text="${'BREED: ' + post.pet.breed.name}"></li>
+			    <li class="list-group-item" th:text="${'LOCATION: ' + post.location.subRegion 
+			    	+ ', ' + post.location.region + ', ' + post.location.country}"></li>
+			    <li class="list-group-item" th:text="${'DATE: ' + #dates.format(post.date, 'MM / dd / yyyy')}"></li>
+			  </ul>
+			  <div class="card-body">
+			    <a th:href="@{${'/posts/' + post.id}}" class="card-link">More Info</a>
+			  </div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+	<div style="text-align: center;margin:20px 0 20px 0">
+		<div class="pagination" th:if="${pageNumbers != null && pageNumbers.size() > 0}" 
+				th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}">
+			<a th:if="${currentPage - 1 >= 0}" th:href="${urlBuilder.replaceQueryParam('page', currentPage).toUriString()}">&laquo;</a>
+			<a th:each="pageNumber:${pageNumbers}" th:href="${urlBuilder.replaceQueryParam('page', pageNumber).toUriString()}" th:text="${pageNumber}" 
+				th:class="${pageNumber == currentPage + 1}? active"></a>
+			<a th:if="${currentPage + 1 < pageNumbers.size()}" th:href="${urlBuilder.replaceQueryParam('page', currentPage+2).toUriString()}">&raquo;</a>
+		</div>
+	</div>
+	
 </body>
+
+<script type="text/javascript" th:src="@{/js/posts.js}"></script>
+
 </html>

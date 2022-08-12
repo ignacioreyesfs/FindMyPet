@@ -1,4 +1,4 @@
-package com.ireyes.findMyPet.service;
+package com.ireyes.findMyPet.service.user;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ireyes.findMyPet.controller.auth.UserForm;
 import com.ireyes.findMyPet.dao.RoleRepository;
 import com.ireyes.findMyPet.dao.UserRepository;
 import com.ireyes.findMyPet.model.user.Contact;
@@ -46,7 +45,7 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public void save(UserForm userForm) {
+	public void save(UserDTO userForm) {
 		User user = new User();
 		Role role = roleRepo.findByName("ROLE_USER");
 		

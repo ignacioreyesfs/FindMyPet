@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Create Post</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div th:if="${creationError}" class="alert alert-danger col-xs-offset-1 col-xs-10">
+			<span>Error, review the given information</span>
+		</div>
+		<form th:action="@{/posts/new}" method="POST" th:object="${post}" enctype="multipart/form-data">
+			<input th:field="*{user}" type="hidden" th:value="*{user.id}">
+			<div class="form-group">
+				<label for="postType">Post type:</label> <select
+					class="form-control" id="postType" th:name="postType"
+					th:field="*{postType}" required="required">
+					<option value="" hidden>Select</option>
+					<option value="search">Search</option>
+					<option value="found">Found</option>
+				</select>
+			</div>
+			<div id="petInfo" style="border: thin solid grey; padding: 1px;">
+				<span>Pet Information</span>
+				<div id="searchGroup" hidden>
+					<div class="input-group mb-3">
+						<span class="input-group-text">Name</span>
+						<input class="form-control" th:field="*{pet.name}" type="text" maxlength="10"/>
+					</div>
+					<div class="input-group mb-3">
+						<span class="input-group-text">Years</span>
+						<input class="form-control" th:field="*{pet.age}" inputmode="numeric" maxlength="2"/>
+					</div>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">Pet type</span>
+					<select class="form-control" required id="petType">
+						<option value="" hidden>Select</option>
+						<option th:each="petType: ${petTypes}" th:value="${petType.name}"
+							th:text="${petType.name}"></option>
+					</select>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">Breed</span>
+					<select class="form-control"
+						id="breed" disabled="disabled" th:field="*{pet.breed}" required>
+						<option value="" hidden>Select</option>
+					</select>
+				</div>
+				<div class="input-group mb-3">
+				  <label class="input-group-text" for="inputFile">Image</label>
+				  <input type="file" class="form-control" id="inputFile" accept="image/*" th:field=*{image} required>
+				</div>
+				<div class="input-group">
+				  <span class="input-group-text">Additional info</span>
+				  <textarea class="form-control" th:field="*{pet.description}" maxlength="250"></textarea>
+				</div>
+			</div>
+
+			<div id="additionalInfo" style="border: thin solid grey; padding: 1px;margin:10px 0 10px 0;">
+				<span>Found / Lost Information</span>
+				<div class="input-group mb-3">
+					<span class="input-group-text">Country</span>
+					<select class="form-control" required id="country">
+						<option value="" hidden>Select</option>
+						<option th:each="country: ${countries}" th:value="${country}"
+							th:text="${country}"></option>
+					</select>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">Province</span>
+					<select class="form-control" disabled required id="region">
+						<option value="" hidden>Select</option>
+					</select>
+				</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text">Area</span>
+					<select class="form-control" disabled th:field="*{location}" required id="subregion">
+						<option value="" hidden>Select</option>
+					</select>
+				</div>
+	
+				<div class="form-group">
+					<span class="input-group-text">Date</span>
+					<input class="form-control" type="date" th:name="date" th:field="*{date}"
+						required />
+				</div>
+				<div class="form-group" id="foundGroup" hidden>
+					<span class="input-group-text">Relocation urgency</span>
+					<select class="form-control" th:field="*{relocationUrgency}">
+						<option value="" hidden>Select</option>
+						<option th:each="urgency: ${relocationUrgencies}"
+							th:value="${urgency}" th:text="${urgency}"></option>
+					</select>
+				</div>
+				<div class="input-group">
+				  <span class="input-group-text">Additional info</span>
+				  <textarea class="form-control" th:field="*{description}" maxlength="250"></textarea>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-default">Create</button>
+		</form>
+	</div>
+
+</body>
+
+<script type="text/javascript" th:src="@{/js/post-creation.js}"></script>
+
+</html>

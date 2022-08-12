@@ -1,11 +1,11 @@
-package com.ireyes.findMyPet.controller.auth;
+package com.ireyes.findMyPet.service.user;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class UserForm {
+public class UserDTO {
 	@NotEmpty(message="required")
 	@Size(min = 3, max = 12, message="length between 3-12")
 	@Pattern(regexp = "^[A-Za-z0-9]+$", message="only alphanumeric allowed")

@@ -1,9 +1,9 @@
 package com.ireyes.findMyPet.controller.auth;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.user.User;
-import com.ireyes.findMyPet.service.UserService;
+import com.ireyes.findMyPet.service.user.UserDTO;
+import com.ireyes.findMyPet.service.user.UserService;
 
 @Controller
 public class RegistrationController {
@@ -26,17 +27,17 @@ public class RegistrationController {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	@GetMapping("/register")
-	public String registerForm(Model model, HttpSession session) {
-		if(session.getAttribute("user") != null) {
+	public String registerForm(Model model, Principal principal) {
+		if(principal != null) {
 			return "redirect:/";
 		}
 		
-		model.addAttribute("user", new UserForm());
+		model.addAttribute("user", new UserDTO());
 		return signUpForm;
 	}
 	
 	@PostMapping("/register")
-	public String showRegister(@Valid @ModelAttribute("user") UserForm userForm,
+	public String showRegister(@Valid @ModelAttribute("user") UserDTO userForm,
 			BindingResult br, Model model, RedirectAttributes redirect) {
 		if(br.hasErrors()) {
 			return signUpForm;
