@@ -4,16 +4,26 @@
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Post</title>
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-	crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 	<div class="container">
 	  <a class="btn btn-primary" th:href="@{/posts}" role="button">Back</a>
 	  <div>
-		  <img class="card-img-top" th:src="@{${'/pet/image/' + post.pet.imagesFilenames[0]}}" alt="Pet image" style="display:block; margin-left: auto;margin-right: auto; width: 612px; height: 467;">
+	<div id="petImages" class="carousel carousel-dark slide" data-bs-ride="carousel">
+	  <div class="carousel-inner">
+	    <div class="carousel-item" th:each="image: ${post.pet.imagesFilenames}" th:classappend="${image.equals(post.pet.imagesFilenames[0])}? active">
+	      <img th:src="@{${'/pet/image/' + image}}" alt="Pet image" style="display:block; margin-left: auto;margin-right: auto; width: 612px; height: 467px;">
+	    </div>
+	  </div>
+	  <button class="carousel-control-prev" type="button" data-bs-target="#petImages" data-bs-slide="prev">
+	    <span class="carousel-control-prev-icon"></span>
+	  </button>
+	  <button class="carousel-control-next" type="button" data-bs-target="#petImages" data-bs-slide="next">
+	    <span class="carousel-control-next-icon"></span>
+	  </button>
+	</div>
 		    <h4 class="card-title" th:text="${post.class.simpleName}"></h4>
 		    <div>
 		    	<div th:if="${post.class.name == 'com.ireyes.findMyPet.model.post.Search'}">
@@ -35,6 +45,7 @@
     		</div>
 	  </div>
 	</div>
+	
 
 </body>
 </html>

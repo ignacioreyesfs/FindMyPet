@@ -1,11 +1,13 @@
 package com.ireyes.findMyPet.service.post;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ireyes.findMyPet.model.pet.Pet;
@@ -16,6 +18,7 @@ import com.ireyes.findMyPet.validation.NotNullIfAnotherFieldHasValue;
 
 @NotNullIfAnotherFieldHasValue(fieldName = "postType", fieldValue = "found", dependFieldName = "relocationUrgency")
 public class PostDTO {
+	private Long id;
 	@NotBlank
 	@Pattern(regexp = "search|found")
 	private String postType;
@@ -27,10 +30,11 @@ public class PostDTO {
 	@NotNull
 	private User user;
 	@NotNull
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date;
 	private RelocationUrgency relocationUrgency;
 	@NotNull
-	private MultipartFile image;
+	private List<MultipartFile> images;
 	
 	// GETTERS AND SETTERS
 	
@@ -76,10 +80,16 @@ public class PostDTO {
 	public void setRelocationUrgency(RelocationUrgency relocationUrgency) {
 		this.relocationUrgency = relocationUrgency;
 	}
-	public MultipartFile getImage() {
-		return image;
+	public List<MultipartFile> getImages() {
+		return images;
 	}
-	public void setImage(MultipartFile image) {
-		this.image = image;
+	public void setImages(List<MultipartFile> images) {
+		this.images = images;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 }

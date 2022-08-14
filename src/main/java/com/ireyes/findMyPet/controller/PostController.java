@@ -2,20 +2,16 @@ package com.ireyes.findMyPet.controller;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.post.Post;
@@ -96,7 +91,7 @@ public class PostController {
 		
 		PostDTO post = new PostDTO();
 		post.setUser(userService.findByUsername(principal.getName()).get());
-		fillPostCreationModel(post, model);
+		fillPostFormModel(post, model);
 		
 		return "post-form";
 	}
@@ -106,7 +101,7 @@ public class PostController {
 			RedirectAttributes redirectAttr) {
 		if(br.hasErrors()) {
 			logger.info("createPost binding results: " + br.toString());
-			fillPostCreationModel(post, model);
+			fillPostFormModel(post, model);
 			model.addAttribute("creationError", true);
 			return "post-form";
 		}
@@ -117,7 +112,7 @@ public class PostController {
 		return "redirect:/posts";
 	}
 	
-	private void fillPostCreationModel(PostDTO post, Model model) {
+	private void fillPostFormModel(PostDTO post, Model model) {
 		model.addAttribute("petTypes", petService.findAllPetTypes());
 		model.addAttribute("countries", locationService.findAllCountries());
 		model.addAttribute("relocationUrgencies", Arrays.asList(RelocationUrgency.values()));

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ireyes.findMyPet.dao.post.FoundRepository;
 import com.ireyes.findMyPet.dao.post.PostRepository;
@@ -89,9 +90,10 @@ public class PostService {
 		
 		filePrefix = post.getUser().getId() + "_" + post.getId() + "_";
 		
-		storageService.store(postDTO.getImage(), filePrefix);
-		
-		post.getPet().addImageFilename(filePrefix + postDTO.getImage().getOriginalFilename());
+		for(MultipartFile image: postDTO.getImages()) {
+			storageService.store(image, filePrefix);
+			post.getPet().addImageFilename(filePrefix + image.getOriginalFilename());
+		}
 		
 		return postRepo.save(post);
 	}
@@ -100,5 +102,5 @@ public class PostService {
 	public void deleteById(Long id) {
 		postRepo.deleteById(id);
 	}
-
+	
 }
