@@ -103,10 +103,11 @@ public class PostService {
 	}
 	
 	@Transactional
-	public Post save(PostDTO postDTO) {
+	public PostDTO save(PostDTO postDTO) {
 		Post post = PostFactory.createPost(postDTO.getPostType());
 		String filePrefix;
 		
+		post.setId(postDTO.getId());
 		post.setUser(postDTO.getUser());
 		post.setPet(postDTO.getPet());
 		post.setDescription(postDTO.getDescription());
@@ -117,16 +118,27 @@ public class PostService {
 			((Found) post).setRelocationUrgency(postDTO.getRelocationUrgency());
 		}
 		
+		if(postDTO.getId() != null) {
+			List<String> oldFilenames = postRepo.findById(postDTO.getId()).get().getPet().getImagesFilenames();
+			for(String filename: oldFilenames) {
+				storageService.delete(filename);
+			}
+		}
+		
 		post = postRepo.save(post);
 		
 		filePrefix = post.getUser().getId() + "_" + post.getId() + "_";
-		
+
 		for(MultipartFile image: postDTO.getImages()) {
 			storageService.store(image, filePrefix);
 			post.getPet().addImageFilename(filePrefix + image.getOriginalFilename());
 		}
 		
-		return postRepo.save(post);
+		post = postRepo.save(post);
+		
+		postDTO.setId(post.getId());
+		
+		return postDTO;
 	}
 	
 	@Transactional

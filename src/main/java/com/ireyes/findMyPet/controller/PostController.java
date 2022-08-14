@@ -24,13 +24,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ireyes.findMyPet.model.post.Post;
 import com.ireyes.findMyPet.model.post.RelocationUrgency;
 import com.ireyes.findMyPet.service.LocationService;
 import com.ireyes.findMyPet.service.PetService;
+import com.ireyes.findMyPet.service.post.PostCriteria;
 import com.ireyes.findMyPet.service.post.PostDTO;
 import com.ireyes.findMyPet.service.post.PostService;
-import com.ireyes.findMyPet.service.post.PostCriteria;
 import com.ireyes.findMyPet.service.user.UserService;
 
 @Controller
@@ -91,32 +90,57 @@ public class PostController {
 		
 		PostDTO post = new PostDTO();
 		post.setUser(userService.findByUsername(principal.getName()).get());
-		fillPostFormModel(post, model);
+		fillPostFormModel(post, "Create Post", model);
 		
 		return "post-form";
 	}
 	
-	@PostMapping("/new")
+	@PostMapping("/save")
 	public String createPost(@Valid @ModelAttribute PostDTO post, BindingResult br, Model model,
-			RedirectAttributes redirectAttr) {
+			RedirectAttributes redirectAttr, Principal principal) {
+		boolean isUpdate = post.getId() != null;
+		
+		if(isUpdate && !post.getUser().getUsername().equals(principal.getName())) {
+			logger.info("access denied to user " + (principal != null? principal.getName(): "Anonymous"));
+			throw new AccessDeniedException("Post is not from the current user");
+		}
+		
 		if(br.hasErrors()) {
 			logger.info("createPost binding results: " + br.toString());
-			fillPostFormModel(post, model);
-			model.addAttribute("creationError", true);
+			fillPostFormModel(post, isUpdate? "Update Post": "Create Post", model);
+			if(isUpdate) {
+				model.addAttribute("isUpdate", true);
+			}
+			model.addAttribute("paramsError", true);
 			return "post-form";
 		}
 		
-		postService.save(post);
-		redirectAttr.addFlashAttribute("postCreated", true);
+		redirectAttr.addFlashAttribute(isUpdate? "updated": "created", true);
+		post = postService.save(post);
 		
-		return "redirect:/posts";
+		return "redirect:/posts/" + post.getId();
 	}
 	
-	private void fillPostFormModel(PostDTO post, Model model) {
+	private void fillPostFormModel(PostDTO post, String title, Model model) {
 		model.addAttribute("petTypes", petService.findAllPetTypes());
 		model.addAttribute("countries", locationService.findAllCountries());
 		model.addAttribute("relocationUrgencies", Arrays.asList(RelocationUrgency.values()));
+		model.addAttribute("title", title);
 		model.addAttribute("post", post);
 	}
 	
+	@GetMapping("/edit/{id}")
+	public String showUpdatePost(@PathVariable Long id, Model model, Principal principal) {
+		PostDTO post = postService.findByIdWithMultiparts(id).orElseThrow(ResourceNotFoundException::new);
+		
+		if(principal == null || !post.getUser().getUsername().equals(principal.getName())) {
+			logger.info("access denied to user " + (principal != null? principal.getName(): "Anonymous"));
+			throw new AccessDeniedException("Post is not from the current user");
+		}
+		
+		model.addAttribute("isUpdate", true);
+		fillPostFormModel(post, "Edit Post", model);
+		
+		return "post-form";
+	}
 }

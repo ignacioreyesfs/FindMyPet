@@ -1,5 +1,6 @@
 package com.ireyes.findMyPet.service.storage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -102,8 +103,10 @@ public class FileSystemStorageService implements StorageService{
 
 	@Override
 	public void delete(String filename) {
-		FileSystemUtils.deleteRecursively(rootLocation.resolve(filename).toFile());
-		
+		File file = rootLocation.resolve(filename).toFile();
+		if(!file.delete()) {
+			logger.error("Cannot delete file: " + file.getName());
+		}
 	}
 	
 }

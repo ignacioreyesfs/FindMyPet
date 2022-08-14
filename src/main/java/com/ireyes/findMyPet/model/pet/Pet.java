@@ -84,4 +84,7 @@ public class Pet {
 	public List<String> getImagesFilenames() {
 		return imagesFilenames;
 	}
+	public void setImagesFilenames(List<String> imagesFilenames) {
+		this.imagesFilenames = imagesFilenames;
+	}
 }

@@ -9,8 +9,12 @@
 </head>
 <body>
 	<div class="container">
+   	  <div th:if="${updated != null || created != null}" class="alert alert-success col-xs-offset-1 col-xs-10">
+		<span th:text="${'Post ' + (updated != null? 'edited':'created') + ' successfully'}"></span>
+	  </div>
 	  <a class="btn btn-primary" th:href="@{/posts}" role="button">Back</a>
 	  <div>
+	  
 	<div id="petImages" class="carousel carousel-dark slide" data-bs-ride="carousel">
 	  <div class="carousel-inner">
 	    <div class="carousel-item" th:each="image: ${post.pet.imagesFilenames}" th:classappend="${image.equals(post.pet.imagesFilenames[0])}? active">
