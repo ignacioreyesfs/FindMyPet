@@ -50,7 +50,7 @@ public class PostController {
 	@GetMapping
 	public String showPosts(Model model, @ModelAttribute("filter") PostCriteria filter, 
 			@RequestParam(name="page", defaultValue="1")int page) {
-		Page<Post> pagePosts;
+		Page<PostDTO> pagePosts;
 		Pageable pagination = PageRequest.of(page-1, 9);
 		
 		model.addAttribute("petTypes", petService.findAllPetTypes());
@@ -75,7 +75,7 @@ public class PostController {
 	
 	@GetMapping("/{id}")
 	public String showPost(@PathVariable("id") Long id, Model model) {
-		Post post = postService.findById(id).orElseThrow(ResourceNotFoundException::new);
+		PostDTO post = postService.findById(id).orElseThrow(ResourceNotFoundException::new);
 		
 		model.addAttribute("post", post);
 		

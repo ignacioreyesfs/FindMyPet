@@ -88,7 +88,7 @@
 			<div class="card" style="width: 18rem;">
 			  <img class="card-img-top" th:src="@{${'/pet/image/' + post.pet.imagesFilenames[0]}}" alt="Pet image">
 			  <div class="card-body">
-			    <h5 class="card-title" th:text="${post.class.simpleName}"></h5>
+			    <h5 class="card-title" th:text="${post.postType.toUpperCase()}"></h5>
 			  </div>
 			  <ul class="list-group list-group-flush">
 			    <li class="list-group-item" th:text="${'TYPE: ' + post.pet.breed.petType.name}"></li>

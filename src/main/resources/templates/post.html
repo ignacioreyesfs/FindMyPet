@@ -24,7 +24,7 @@
 	    <span class="carousel-control-next-icon"></span>
 	  </button>
 	</div>
-		    <h4 class="card-title" th:text="${post.class.simpleName}"></h4>
+		    <h4 class="card-title" th:text="${post.postType.toUpperCase()}"></h4>
 		    <div>
 		    	<div th:if="${post.class.name == 'com.ireyes.findMyPet.model.post.Search'}">
 		    		<p th:text="${'NAME: ' + post.pet.name}">
