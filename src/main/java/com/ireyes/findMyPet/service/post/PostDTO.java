@@ -15,8 +15,10 @@ import com.ireyes.findMyPet.model.post.Location;
 import com.ireyes.findMyPet.model.post.RelocationUrgency;
 import com.ireyes.findMyPet.model.user.User;
 import com.ireyes.findMyPet.validation.NotNullIfAnotherFieldHasValue;
+import com.ireyes.findMyPet.validation.NotEmptyMultipartfilesIfAnotherFieldNotNull;
 
 @NotNullIfAnotherFieldHasValue(fieldName = "postType", fieldValue = "found", dependFieldName = "relocationUrgency")
+@NotEmptyMultipartfilesIfAnotherFieldNotNull(anotherFieldName = "id", multipartsFieldName = "images")
 public class PostDTO {
 	private Long id;
 	@NotBlank
@@ -33,7 +35,6 @@ public class PostDTO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date;
 	private RelocationUrgency relocationUrgency;
-	@NotNull
 	private List<MultipartFile> images;
 	
 	// GETTERS AND SETTERS

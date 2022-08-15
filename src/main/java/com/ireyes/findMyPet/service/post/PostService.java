@@ -1,11 +1,5 @@
 package com.ireyes.findMyPet.service.post;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,15 +10,11 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.ireyes.findMyPet.dao.post.FoundRepository;
 import com.ireyes.findMyPet.dao.post.PostRepository;
@@ -48,12 +38,12 @@ public class PostService {
 	
 	@Transactional
 	public List<PostDTO> findAll(){
-		return postRepo.findAll().stream().map(post -> getPostDTO(post, false)).collect(Collectors.toList());
+		return postRepo.findAll().stream().map(post -> getPostDTO(post)).collect(Collectors.toList());
 	}
 	
 	@Transactional
 	public Page<PostDTO> findAll(Pageable pagination){
-		return postRepo.findAll(pagination).map(post -> getPostDTO(post, false));
+		return postRepo.findAll(pagination).map(post -> getPostDTO(post));
 	}
 	
 	@Transactional
@@ -64,18 +54,7 @@ public class PostService {
 			return Optional.empty();
 		}
 		
-		return Optional.ofNullable(getPostDTO(post.get(), false));
-	}
-	
-	@Transactional
-	public Optional<PostDTO> findByIdWithMultiparts(Long id){
-		Optional<Post> post = postRepo.findById(id);
-		
-		if(post.isEmpty()) {
-			return Optional.empty();
-		}
-		
-		return Optional.ofNullable(getPostDTO(post.get(), true));
+		return Optional.ofNullable(getPostDTO(post.get()));
 	}
 	
 	@Transactional
@@ -99,13 +78,15 @@ public class PostService {
 					filter.getRegion(), filter.getSubRegion(), dateFrom, pagination);
 		}
 		
-		return posts.map(post -> getPostDTO(post, false));
+		return posts.map(post -> getPostDTO(post));
 	}
 	
 	@Transactional
 	public PostDTO save(PostDTO postDTO) {
 		Post post = PostFactory.createPost(postDTO.getPostType());
 		String filePrefix;
+		boolean isUpdate = postDTO.getId() != null;
+		List<String> filenamesToDelete = new ArrayList<>();
 		
 		post.setId(postDTO.getId());
 		post.setUser(postDTO.getUser());
@@ -118,20 +99,26 @@ public class PostService {
 			((Found) post).setRelocationUrgency(postDTO.getRelocationUrgency());
 		}
 		
-		if(postDTO.getId() != null) {
-			List<String> oldFilenames = postRepo.findById(postDTO.getId()).get().getPet().getImagesFilenames();
-			for(String filename: oldFilenames) {
-				storageService.delete(filename);
-			}
+		// if an update has new images
+		if(isUpdate && postDTO.getImages() != null) {
+			filenamesToDelete = postRepo.findById(postDTO.getId()).orElseThrow().getPet().getImagesFilenames();
 		}
 		
 		post = postRepo.save(post);
 		
-		filePrefix = post.getUser().getId() + "_" + post.getId() + "_";
-
-		for(MultipartFile image: postDTO.getImages()) {
-			storageService.store(image, filePrefix);
-			post.getPet().addImageFilename(filePrefix + image.getOriginalFilename());
+		filePrefix = post.getUser().getId() + "_" + post.getId() + "_" + System.currentTimeMillis() + "_";
+		
+		if(postDTO.getImages() != null) {
+			List<String> imageFilenames = new ArrayList<>();
+			for(MultipartFile image: postDTO.getImages()) {
+				storageService.store(image, filePrefix);
+				imageFilenames.add(filePrefix + image.getOriginalFilename());
+			}
+			post.getPet().setImagesFilenames(imageFilenames);
+		}
+		
+		for(String filename: filenamesToDelete) {
+			storageService.delete(filename);
 		}
 		
 		post = postRepo.save(post);
@@ -146,9 +133,7 @@ public class PostService {
 		postRepo.deleteById(id);
 	}
 	
-	private PostDTO getPostDTO(Post post, boolean includeMultipart) {
-		List<MultipartFile> images = new ArrayList<>();
-		
+	private PostDTO getPostDTO(Post post) {
 		PostDTO postDTO = new PostDTO();
 		postDTO.setId(post.getId());
 		postDTO.setPet(post.getPet());
@@ -164,33 +149,7 @@ public class PostService {
 			postDTO.setPostType("search");
 		}
 		
-		if(includeMultipart) {
-			for(String filename: post.getPet().getImagesFilenames()) {
-				images.add(getMultipartFile(filename));
-			}
-		}
-		
-		postDTO.setImages(images);
-		
 		return postDTO;
-	}
-	
-	private MultipartFile getMultipartFile(String filename) {
-		File file = storageService.load(filename).toFile();
-		FileItem fileItem;
-		
-		try (InputStream input = new FileInputStream(file)){
-			fileItem = new DiskFileItem("image", Files.probeContentType(file.toPath()), 
-					false, file.getName(), (int)file.length(), file.getParentFile());
-			OutputStream  os = fileItem.getOutputStream();
-			IOUtils.copy(input, os);
-			IOUtils.closeQuietly(os);			
-		}catch(IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-		return new CommonsMultipartFile(fileItem);
 	}
 
 }

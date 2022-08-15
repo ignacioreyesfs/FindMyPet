@@ -1,6 +1,7 @@
 $(document).ready(loadBreeds);
 $(document).ready(loadRegions);
 $(document).ready(loadSubRegions);
+$(document).ready(displayExtraFields);
 
 $('#petType').change(loadBreeds);
 
@@ -65,17 +66,17 @@ function setOptions(data, itemSearch){
 	$(itemSearch).html(html);
 }
 
-$('#postType').change(function(){
-	if($(this).val() == 'search'){
+$('#postType').change(displayExtraFields);
+
+function displayExtraFields(){
+	if($('#postType').val() == 'search'){
 		$('#searchGroup').removeAttr("hidden");
 		$('#foundGroup').prop("hidden", "hidden");
-	}else if($(this).val() == 'found'){
+	}else if($('#postType').val() == 'found'){
 		$('#foundGroup').removeAttr("hidden");
 		$('#searchGroup').prop("hidden", "hidden");
 	}
-});
-
-
+}
 
 
 

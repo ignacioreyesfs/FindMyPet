@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -68,7 +69,7 @@ public class PetController {
 		return petService.findBreedByPetType_Name(petType);
 	}
 	
-	@GetMapping("/pet/image/{filename}")
+	@GetMapping(value = "/pet/image/{filename}", produces = MediaType.IMAGE_JPEG_VALUE)
 	@ResponseBody
 	public byte[] getPetImage(@PathVariable("filename") String filename) throws IOException {
 		return storageService.loadAsResource(filename).getInputStream().readAllBytes();

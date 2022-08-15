@@ -13,6 +13,8 @@
 		<span th:text="${'Post ' + (updated != null? 'edited':'created') + ' successfully'}"></span>
 	  </div>
 	  <a class="btn btn-primary" th:href="@{/posts}" role="button">Back</a>
+	  <a sec:authorize="isAuthenticated()" th:if="${#authentication.getPrincipal().getUsername().equals(post.user.username)}" 
+	  	class="btn btn-success" th:href="@{${'/posts/edit/' + post.id}}" role="button">Edit</a>
 	  <div>
 	  
 	<div id="petImages" class="carousel carousel-dark slide" data-bs-ride="carousel">

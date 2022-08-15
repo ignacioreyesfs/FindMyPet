@@ -115,8 +115,15 @@ public class PostController {
 			return "post-form";
 		}
 		
-		redirectAttr.addFlashAttribute(isUpdate? "updated": "created", true);
+		// Clean default multipart when no file selected
+		if(post.getImages().size() == 1 && post.getImages().get(0).isEmpty() 
+				&& post.getImages().get(0).getOriginalFilename().equals("")) {
+			post.setImages(null);
+		}
+			
 		post = postService.save(post);
+		
+		redirectAttr.addFlashAttribute(isUpdate? "updated": "created", true);
 		
 		return "redirect:/posts/" + post.getId();
 	}
@@ -131,7 +138,7 @@ public class PostController {
 	
 	@GetMapping("/edit/{id}")
 	public String showUpdatePost(@PathVariable Long id, Model model, Principal principal) {
-		PostDTO post = postService.findByIdWithMultiparts(id).orElseThrow(ResourceNotFoundException::new);
+		PostDTO post = postService.findById(id).orElseThrow(ResourceNotFoundException::new);
 		
 		if(principal == null || !post.getUser().getUsername().equals(principal.getName())) {
 			logger.info("access denied to user " + (principal != null? principal.getName(): "Anonymous"));
