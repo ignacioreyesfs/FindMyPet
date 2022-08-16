@@ -29,6 +29,7 @@ public class SecurityConfig{
 		http.authorizeRequests()
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/posts/new").authenticated()
+				.antMatchers("/user/**").authenticated()
 				.and()
 				.formLogin()
 					.loginPage("/login")

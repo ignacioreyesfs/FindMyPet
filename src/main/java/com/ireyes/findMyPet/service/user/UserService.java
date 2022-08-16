@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public void save(UserDTO userForm) {
+	public void save(RegisterDTO userForm) {
 		User user = new User();
 		Role role = roleRepo.findByName("ROLE_USER");
 		
@@ -54,10 +54,23 @@ public class UserService implements UserDetailsService{
 		}
 		
 		user.setUsername(userForm.getUsername());
-		user.setPassword(encoder.encode(userForm.getPassword()));
+		user.setPassword(encoder.encode(userForm.getPassword().getValue()));
 		user.addContact(new Contact(ContactType.EMAIL, userForm.getEmail()));
 		user.setRoles(Arrays.asList(role));
 		userRepo.save(user);
+	}
+	
+	@Transactional
+	public void changeUserPassword(String username, String newPassword) {
+		User user = userRepo.findByUsername(username).orElseThrow();
+		user.setPassword(encoder.encode(newPassword));
+		userRepo.save(user);
+	}
+	
+	public boolean userPasswordMatch(String username, String password) {
+		User user = userRepo.findByUsername(username).orElseThrow();
+		
+		return encoder.matches(password, user.getPassword());
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.user.User;
-import com.ireyes.findMyPet.service.user.UserDTO;
+import com.ireyes.findMyPet.service.user.RegisterDTO;
 import com.ireyes.findMyPet.service.user.UserService;
 
 @Controller
@@ -32,12 +32,12 @@ public class RegistrationController {
 			return "redirect:/";
 		}
 		
-		model.addAttribute("user", new UserDTO());
+		model.addAttribute("user", new RegisterDTO());
 		return signUpForm;
 	}
 	
 	@PostMapping("/register")
-	public String showRegister(@Valid @ModelAttribute("user") UserDTO userForm,
+	public String showRegister(@Valid @ModelAttribute("user") RegisterDTO userForm,
 			BindingResult br, Model model, RedirectAttributes redirect) {
 		if(br.hasErrors()) {
 			return signUpForm;
@@ -47,12 +47,6 @@ public class RegistrationController {
 		if(existing.isPresent()) {
 			model.addAttribute("user", userForm);
 			model.addAttribute("registrationError", "User name already exists");
-			return signUpForm;
-		}
-		
-		if(!userForm.passwordsMatches()) {
-			model.addAttribute("user", userForm);
-			model.addAttribute("registrationError", "Passwords doesn't match");
 			return signUpForm;
 		}
 		

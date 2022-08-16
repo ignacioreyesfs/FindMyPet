@@ -48,7 +48,7 @@
 				<input type="text" class="form-control" th:field="*{email}" placeholder="Email Address" required="required">
 			</div>
         </div>
-       	<p th:if="${#fields.hasErrors('password')}" th:errorclass="text-danger" th:errors="*{password}" 
+       	<p th:if="${#fields.hasErrors('password.value')}" th:errorclass="text-danger" th:errors="*{password.value}" 
    			th:text="${err}"/>
 		<div class="form-group">
 			<div class="input-group">
@@ -57,7 +57,7 @@
 						<i class="fa fa-lock"></i>
 					</span>                    
 				</div>
-				<input type="password" class="form-control" th:field="*{password}" placeholder="Password" required="required">
+				<input type="password" class="form-control" th:field="*{password.value}" placeholder="Password" required="required">
 			</div>
         </div>
 		<div class="form-group">
@@ -68,7 +68,7 @@
 						<i class="fa fa-check"></i>
 					</span>                    
 				</div>
-				<input type="password" class="form-control" th:field="*{confirmPassword}" placeholder="Confirm Password" required="required">
+				<input type="password" class="form-control" th:field="*{password.confirmValue}" placeholder="Confirm Password" required="required">
 			</div>
         </div>
 		<div class="form-group">
