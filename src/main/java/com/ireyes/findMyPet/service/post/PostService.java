@@ -61,6 +61,7 @@ public class PostService {
 	public Page<PostDTO> findByPostCriteria(PostCriteria filter, Pageable pagination){
 		Date dateFrom;
 		Page<Post> posts;
+		
 		try {
 			dateFrom = new SimpleDateFormat("yyyy-MM-dd").parse(filter.getDateFrom());
 		} catch (ParseException e) {
@@ -78,7 +79,7 @@ public class PostService {
 					filter.getRegion(), filter.getSubRegion(), dateFrom, pagination);
 		}
 		
-		return posts.map(post -> getPostDTO(post));
+		return posts.map(this::getPostDTO);
 	}
 	
 	@Transactional
@@ -95,11 +96,10 @@ public class PostService {
 		post.setLocation(postDTO.getLocation());
 		post.setDate(postDTO.getDate());
 		
-		if(post instanceof Found) {
-			((Found) post).setRelocationUrgency(postDTO.getRelocationUrgency());
+		if(post instanceof Found found) {
+			found.setRelocationUrgency(postDTO.getRelocationUrgency());
 		}
 		
-		// if an update has new images
 		if(isUpdate && postDTO.getImages() != null) {
 			filenamesToDelete = postRepo.findById(postDTO.getId()).orElseThrow().getPet().getImagesFilenames();
 		}
@@ -123,9 +123,7 @@ public class PostService {
 		
 		post = postRepo.save(post);
 		
-		postDTO.setId(post.getId());
-		
-		return postDTO;
+		return getPostDTO(post);
 	}
 	
 	@Transactional
@@ -142,8 +140,8 @@ public class PostService {
 		postDTO.setUser(post.getUser());
 		postDTO.setDate(post.getDate());
 		
-		if(post instanceof Found) {
-			postDTO.setRelocationUrgency(((Found)post).getRelocationUrgency());
+		if(post instanceof Found found) {
+			postDTO.setRelocationUrgency(found.getRelocationUrgency());
 			postDTO.setPostType("found");
 		}else if(post instanceof Search) {
 			postDTO.setPostType("search");

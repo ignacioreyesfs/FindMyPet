@@ -2,6 +2,7 @@ package com.ireyes.findMyPet.controller;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.post.RelocationUrgency;
@@ -54,8 +56,8 @@ public class PostController {
 		
 		model.addAttribute("petTypes", petService.findAllPetTypes());
 		model.addAttribute("countries", locationService.findAllCountries());
-		model.addAttribute("filter", filter == null? new PostCriteria(): filter);
 		model.addAttribute("relocations", Arrays.asList(RelocationUrgency.values()));
+		model.addAttribute("filter", filter == null? new PostCriteria(): filter);
 		
 		if(filter != null) {
 			pagePosts = postService.findByPostCriteria(filter, pagination);
@@ -67,7 +69,6 @@ public class PostController {
 		model.addAttribute("currentPage", pagePosts.getNumber());
 		model.addAttribute("pageNumbers", IntStream.rangeClosed(1, pagePosts.getTotalPages())
 				.boxed().collect(Collectors.toList()));
-		
 		
 		return "posts";
 	}
@@ -84,11 +85,12 @@ public class PostController {
 	// creation
 	@GetMapping("/new")
 	public String showCreatePost(Model model, Principal principal) {
+		PostDTO post = new PostDTO();
+		
 		if(principal == null) {
 			throw new AccessDeniedException("Cannot create a post without user");
 		}
 		
-		PostDTO post = new PostDTO();
 		post.setUser(userService.findByUsername(principal.getName()).get());
 		fillPostFormModel(post, "Create Post", model);
 		
@@ -115,9 +117,7 @@ public class PostController {
 			return "post-form";
 		}
 		
-		// Clean default multipart when no file selected
-		if(post.getImages().size() == 1 && post.getImages().get(0).isEmpty() 
-				&& post.getImages().get(0).getOriginalFilename().equals("")) {
+		if(isEmptyMultipartFiles(post.getImages())) {
 			post.setImages(null);
 		}
 			
@@ -126,6 +126,10 @@ public class PostController {
 		redirectAttr.addFlashAttribute(isUpdate? "updated": "created", true);
 		
 		return "redirect:/posts/" + post.getId();
+	}
+	
+	private boolean isEmptyMultipartFiles(List<MultipartFile> files){
+		return files.stream().filter(file -> !file.isEmpty() && !file.getOriginalFilename().equals("")).toList().isEmpty();
 	}
 	
 	private void fillPostFormModel(PostDTO post, String title, Model model) {

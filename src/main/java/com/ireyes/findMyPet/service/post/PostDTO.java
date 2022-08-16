@@ -14,8 +14,8 @@ import com.ireyes.findMyPet.model.pet.Pet;
 import com.ireyes.findMyPet.model.post.Location;
 import com.ireyes.findMyPet.model.post.RelocationUrgency;
 import com.ireyes.findMyPet.model.user.User;
-import com.ireyes.findMyPet.validation.NotNullIfAnotherFieldHasValue;
 import com.ireyes.findMyPet.validation.NotEmptyMultipartfilesIfAnotherFieldNotNull;
+import com.ireyes.findMyPet.validation.NotNullIfAnotherFieldHasValue;
 
 @NotNullIfAnotherFieldHasValue(fieldName = "postType", fieldValue = "found", dependFieldName = "relocationUrgency")
 @NotEmptyMultipartfilesIfAnotherFieldNotNull(anotherFieldName = "id", multipartsFieldName = "images")
