@@ -32,9 +32,9 @@
 	</div>
 		    <h4 class="card-title" th:text="${post.postType.toUpperCase()}"></h4>
 		    <div>
-		    	<div th:if="${post.class.name == 'com.ireyes.findMyPet.model.post.Search'}">
-		    		<p th:text="${'NAME: ' + post.pet.name}">
-		    		<p th:text="${'AGE: ' + post.pet.age}">
+		    	<div th:if="${post.postType == 'search'}">
+		    		<p th:text="${'NAME: ' + post.pet.name}" required pattern="[A-Za-z0-9]">
+		    		<p th:text="${'AGE: ' + post.pet.age}" required>
 		    	</div>
 			    <p th:text="${'TYPE: ' + post.pet.breed.petType.name}"></p>
 			    <p th:text="${'BREED: ' + post.pet.breed.name}"></p>
@@ -43,7 +43,7 @@
 			    <p th:text="${'DATE: ' + #dates.format(post.date, 'MM / dd / yyyy')}"></p>
 			    <p th:if="${post.pet.description != null && !post.pet.description.isEmpty()}"
 			    	th:text="${'PET EXTRA INFO: ' + post.pet.description}"></p>
-		    	<p th:if="${post.class.name == 'com.ireyes.findMyPet.model.post.Found'}" 
+		    	<p th:if="${post.postType == 'found'}" 
 		    		th:text="${'RELOCATION URGENCY: ' + post.relocationUrgency}"></p>
 			    <p th:if="${post.description != null && !post.description.isEmpty()}" 
 			    	th:text="${'POST EXTRA INFO: ' + post.description}"></p>

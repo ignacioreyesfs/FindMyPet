@@ -2,6 +2,14 @@ $(document).ready(loadBreeds);
 $(document).ready(loadRegions);
 $(document).ready(displayExtraFields);
 
+$("#filterForm").submit(function() {
+    $(this).find(":input").filter(function () {
+        return !this.value;
+    }).attr("disabled", true);
+
+    return true;
+});
+
 $('#petType').change(loadBreeds);
 
 function loadBreeds() {
