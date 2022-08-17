@@ -2,7 +2,6 @@ package com.ireyes.findMyPet.validation;
 
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
