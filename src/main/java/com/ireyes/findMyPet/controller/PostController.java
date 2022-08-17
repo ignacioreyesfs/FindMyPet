@@ -154,4 +154,18 @@ public class PostController {
 		
 		return "post-form";
 	}
+	
+	@PostMapping("/delete/{id}")
+	public String deletePost(@PathVariable Long id, @RequestParam(required = false) String redirectUrl, Principal principal) {
+		PostDTO post = postService.findById(id).orElseThrow();
+		
+		if(principal == null || !principal.getName().equals(post.getUser().getUsername())) {
+			logger.severe("Invalid post delete request from " + (principal != null? principal.getName(): "Anon"));
+			throw new AccessDeniedException("Invalid post delete request");
+		}
+		
+		postService.deleteById(id);
+		
+		return "redirect:" + (redirectUrl != null? redirectUrl: "/");
+	}
 }

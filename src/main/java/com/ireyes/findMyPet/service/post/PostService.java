@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -38,12 +37,12 @@ public class PostService {
 	
 	@Transactional
 	public List<PostDTO> findAll(){
-		return postRepo.findAll().stream().map(post -> getPostDTO(post)).collect(Collectors.toList());
+		return postRepo.findAll().stream().map(this::getPostDTO).toList();
 	}
 	
 	@Transactional
 	public Page<PostDTO> findAll(Pageable pagination){
-		return postRepo.findAll(pagination).map(post -> getPostDTO(post));
+		return postRepo.findAll(pagination).map(this::getPostDTO);
 	}
 	
 	@Transactional
@@ -130,6 +129,12 @@ public class PostService {
 	public void deleteById(Long id) {
 		postRepo.deleteById(id);
 	}
+	
+	@Transactional
+	public List<PostDTO> findByUsername(String username){
+		return postRepo.findByUser_Username(username).stream().map(this::getPostDTO).toList();
+	}
+	
 	
 	private PostDTO getPostDTO(Post post) {
 		PostDTO postDTO = new PostDTO();

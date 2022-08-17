@@ -34,4 +34,6 @@ public interface PostRepository<T extends Post> extends JpaRepository<T, Long>{
 	public Page<Post> findByFiltering(@Param("petType")String petType, @Param("breed")String breed,
 			@Param("country")String country, @Param("region")String region, @Param("subRegion")String subRegion,
 			@Param("dateFrom")Date dateFrom, Pageable pageable);
+	
+	public List<Post> findByUser_Username(String username);
 }

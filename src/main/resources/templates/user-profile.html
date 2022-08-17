@@ -45,5 +45,39 @@
           </div>
       </div>
 	</div>
+	<div class="container" >
+	  <div style="border-radius: 5px;padding: 10px;background-color: #f2f2f2;">
+	    <h5 class="mb-3">Created posts</h5>
+	    <div style="text-align: center;">
+	      <h6 th:if="${posts == null || posts.size() <= 0}" style="justify-content: center;">No posts created</h6>
+	    </div>
+	    <div class="row">
+   		  <div class="col-sm-4 mb-2" th:each="post: ${posts}">
+		    <div class="card" style="width: 18rem;">
+		      <img class="card-img-top" th:src="@{${'/pet/image/' + post.pet.imagesFilenames[0]}}" alt="Pet image">
+		      <div class="card-body">
+		        <h5 class="card-title d-inline" th:text="${post.postType.toUpperCase()}"></h5>
+		        <a class="badge btn btn-success" th:href="@{${'/posts/edit/' + post.id}}" role="button">Edit</a>
+   			    <form method="POST" th:action="@{${'/posts/delete/' + post.id}}" class="d-inline">
+   			      <input type="hidden" name="redirectUrl" th:value="@{/user}">
+		    	  <button type="submit" name="submit" class="badge btn btn-danger">Delete</button>
+		    	</form>
+		      </div>
+		      <ul class="list-group list-group-flush">
+		        <li class="list-group-item" th:text="${'TYPE: ' + post.pet.breed.petType.name}"></li>
+		        <li class="list-group-item" th:text="${'BREED: ' + post.pet.breed.name}"></li>
+		        <li class="list-group-item" th:text="${'LOCATION: ' + post.location.subRegion 
+		        	+ ', ' + post.location.region + ', ' + post.location.country}"></li>
+		        <li class="list-group-item" th:text="${'DATE: ' + #dates.format(post.date, 'MM / dd / yyyy')}"></li>
+		      </ul>
+		      <div class="card-body">
+		        <a th:href="@{${'/posts/' + post.id}}" class="card-link">More Info</a>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	    
+	  </div>
+	</div>
 </body>
 </html>

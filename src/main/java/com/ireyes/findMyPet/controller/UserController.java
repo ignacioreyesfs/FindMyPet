@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.user.ContactType;
+import com.ireyes.findMyPet.service.post.PostService;
 import com.ireyes.findMyPet.service.user.PasswordDTO;
 import com.ireyes.findMyPet.service.user.UserDto;
 import com.ireyes.findMyPet.service.user.UserService;
@@ -27,10 +28,13 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private PostService postService;
 	
 	@GetMapping("/user")
 	public String showProfile(Model model, Principal principal) {
 		model.addAttribute("user", userService.findByUsername(principal.getName()).orElseThrow());
+		model.addAttribute("posts", postService.findByUsername(principal.getName()));
 		return "user-profile";
 	}
 	
