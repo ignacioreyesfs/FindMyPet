@@ -1,5 +1,6 @@
 package com.ireyes.findMyPet.service.user;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -40,12 +41,25 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public User save(User user) {
-		return userRepo.save(user);
+	public Optional<UserDto> findDtoByUsername(String username){
+		Optional<User> user = userRepo.findByUsername(username);
+		if(user.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(getUserDto(user.get()));
 	}
 	
 	@Transactional
-	public void save(RegisterDTO userForm) {
+	public void save(UserDto userDto) {
+		User user = userRepo.findByUsername(userDto.getUsername()).orElseThrow();
+		user.setContacts(userDto.getContacts());
+		user.setFirstName(userDto.getFirstName().trim());
+		userRepo.save(user);
+	}
+	
+	@Transactional
+	public void register(RegisterDTO userForm) {
 		User user = new User();
 		Role role = roleRepo.findByName("ROLE_USER");
 		
@@ -71,6 +85,26 @@ public class UserService implements UserDetailsService{
 		User user = userRepo.findByUsername(username).orElseThrow();
 		
 		return encoder.matches(password, user.getPassword());
+	}
+	
+	private UserDto getUserDto(User user) {
+		UserDto userDto = new UserDto();
+		userDto.setContacts(user.getContacts());
+		userDto.setUsername(user.getUsername());
+		userDto.setFirstName(user.getFirstName());
+		
+		return userDto;
+	}
+	
+	public void addContact(UserDto user) {
+		if(user.getContacts() == null) {
+			user.setContacts(new ArrayList<>());
+		}
+		user.getContacts().add(new Contact());
+	}
+	
+	public void removeContact(UserDto user, int index) {
+		user.getContacts().remove(index);
 	}
 
 	@Override

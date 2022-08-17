@@ -13,7 +13,7 @@
 	  	Log in</a>
 	  <a sec:authorize="isAnonymous()" th:href="@{/register}" class="list-group-item list-group-item-action">
 	  	Sign up</a>
-	  <a sec:authorize="isAuthenticated()" th:href="@{/user/profile}" class="list-group-item list-group-item-action">
+	  <a sec:authorize="isAuthenticated()" th:href="@{/user}" class="list-group-item list-group-item-action">
 	  	Profile</a>
 	  <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" class="list-group-item list-group-item-action">
 	  	Admin</a>

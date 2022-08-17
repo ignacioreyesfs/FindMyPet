@@ -50,7 +50,7 @@ public class RegistrationController {
 			return signUpForm;
 		}
 		
-		userService.save(userForm);
+		userService.register(userForm);
 		logger.info("Created user " + userForm.getUsername());
 		
 		redirect.addFlashAttribute("userCreated", true);
