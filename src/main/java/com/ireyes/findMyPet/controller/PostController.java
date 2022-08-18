@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,10 +75,12 @@ public class PostController {
 	}
 	
 	@GetMapping("/{id}")
-	public String showPost(@PathVariable("id") Long id, Model model) {
+	public String showPost(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
 		PostDTO post = postService.findById(id).orElseThrow(ResourceNotFoundException::new);
+		String referer = request.getHeader("Referer");
 		
 		model.addAttribute("post", post);
+		model.addAttribute("backUrl", referer);
 		
 		return "post";
 	}

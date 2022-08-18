@@ -58,7 +58,7 @@
 		      <div class="card-body">
 		        <h5 class="card-title d-inline" th:text="${post.postType.toUpperCase()}"></h5>
 		        <a class="badge btn btn-success" th:href="@{${'/posts/edit/' + post.id}}" role="button">Edit</a>
-   			    <form method="POST" th:action="@{${'/posts/delete/' + post.id}}" class="d-inline">
+   			    <form method="POST" th:action="@{${'/posts/delete/' + post.id}}" class="d-inline" onsubmit="return confirm('Confirm deletion?');">
    			      <input type="hidden" name="redirectUrl" th:value="@{/user}">
 		    	  <button type="submit" name="submit" class="badge btn btn-danger">Delete</button>
 		    	</form>

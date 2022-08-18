@@ -12,9 +12,15 @@
    	  <div th:if="${updated != null || created != null}" class="alert alert-success col-xs-offset-1 col-xs-10">
 		<span th:text="${'Post ' + (updated != null? 'edited':'created') + ' successfully'}"></span>
 	  </div>
-	  <a class="btn btn-primary" th:href="@{/posts}" role="button">Back</a>
-	  <a sec:authorize="isAuthenticated()" th:if="${#authentication.getPrincipal().getUsername().equals(post.user.username)}" 
-	  	class="btn btn-success" th:href="@{${'/posts/edit/' + post.id}}" role="button">Edit</a>
+	  <a class="btn btn-primary" th:href="${backUrl}" role="button">Back</a>
+	  <div class="d-inline" sec:authorize="isAuthenticated()" th:if="${#authentication.getPrincipal().getUsername().equals(post.user.username)}">
+	    <a  class="btn btn-success" th:href="@{${'/posts/edit/' + post.id}}" role="button">Edit</a>
+        <form method="POST" th:action="@{${'/posts/delete/' + post.id}}" class="d-inline"
+        		onsubmit="return confirm('Confirm deletion?');">
+          <input type="hidden" name="redirectUrl" th:value="@{/posts}">
+   	      <button type="submit" name="submit" class="btn btn-danger">Delete</button>
+   	    </form>
+ 	  </div>
 	  <div>
 	  
 	<div id="petImages" class="carousel carousel-dark slide" data-bs-ride="carousel">
