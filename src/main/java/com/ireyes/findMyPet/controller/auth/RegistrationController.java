@@ -1,7 +1,6 @@
 package com.ireyes.findMyPet.controller.auth;
 
 import java.security.Principal;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import javax.validation.Valid;
@@ -15,8 +14,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ireyes.findMyPet.model.user.User;
 import com.ireyes.findMyPet.service.user.RegisterDTO;
+import com.ireyes.findMyPet.service.user.UserAlreadyExistsException;
 import com.ireyes.findMyPet.service.user.UserService;
 
 @Controller
@@ -43,14 +42,14 @@ public class RegistrationController {
 			return signUpForm;
 		}
 		
-		Optional<User> existing = userService.findByUsername(userForm.getUsername());
-		if(existing.isPresent()) {
+		try {
+			userService.register(userForm);
+		}catch(UserAlreadyExistsException e) {
 			model.addAttribute("user", userForm);
 			model.addAttribute("registrationError", "User name already exists");
 			return signUpForm;
 		}
 		
-		userService.register(userForm);
 		logger.info("Created user " + userForm.getUsername());
 		
 		redirect.addFlashAttribute("userCreated", true);

@@ -59,8 +59,13 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public void register(RegisterDTO userForm) {
+	public void register(RegisterDTO userForm) throws UserAlreadyExistsException{
 		User user = new User();
+		
+		if(userRepo.existsByUsername(userForm.getUsername())) {
+			throw new UserAlreadyExistsException(userForm.getUsername());
+		}
+		
 		Role role = roleRepo.findByName("ROLE_USER");
 		
 		if(role == null) {

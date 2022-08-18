@@ -19,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	public List<User> findWithPostBefore(@Param("date") Date date);
 	
 	public Optional<User> findByUsername(String username);
+	
+	
+	public boolean existsByUsername(String username);
 }
