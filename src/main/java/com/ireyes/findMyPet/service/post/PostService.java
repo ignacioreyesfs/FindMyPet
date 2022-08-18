@@ -11,7 +11,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,11 +39,12 @@ public class PostService {
 	
 	@Transactional
 	public List<PostDTO> findAll(){
-		return postRepo.findAll().stream().map(this::getPostDTO).toList();
+		return postRepo.findAll(getDefaultSort()).stream().map(this::getPostDTO).toList();
 	}
 	
 	@Transactional
-	public Page<PostDTO> findAll(Pageable pagination){
+	public Page<PostDTO> findAll(int page, int pageSize){
+		Pageable pagination = PageRequest.of(page, pageSize, getDefaultSort());
 		return postRepo.findAll(pagination).map(this::getPostDTO);
 	}
 	
@@ -57,9 +60,10 @@ public class PostService {
 	}
 	
 	@Transactional
-	public Page<PostDTO> findByPostCriteria(PostCriteria filter, Pageable pagination){
+	public Page<PostDTO> findByPostCriteria(PostCriteria filter, int page, int pageSize){
 		Date dateFrom;
 		Page<Post> posts;
+		Pageable pagination = PageRequest.of(page, pageSize, getDefaultSort());
 		
 		try {
 			dateFrom = new SimpleDateFormat("yyyy-MM-dd").parse(filter.getDateFrom());
@@ -79,6 +83,10 @@ public class PostService {
 		}
 		
 		return posts.map(this::getPostDTO);
+	}
+	
+	private Sort getDefaultSort() {
+		return Sort.by("date").descending();
 	}
 	
 	@Transactional

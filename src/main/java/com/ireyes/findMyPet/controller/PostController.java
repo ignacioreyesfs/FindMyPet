@@ -12,8 +12,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,7 +51,6 @@ public class PostController {
 	public String showPosts(Model model, @ModelAttribute("filter") PostCriteria filter, 
 			@RequestParam(name="page", defaultValue="1")int page) {
 		Page<PostDTO> pagePosts;
-		Pageable pagination = PageRequest.of(page-1, 9);
 		
 		model.addAttribute("petTypes", petService.findAllPetTypes());
 		model.addAttribute("countries", locationService.findAllCountries());
@@ -61,9 +58,9 @@ public class PostController {
 		model.addAttribute("filter", filter == null? new PostCriteria(): filter);
 		
 		if(filter != null) {
-			pagePosts = postService.findByPostCriteria(filter, pagination);
+			pagePosts = postService.findByPostCriteria(filter, page-1, 9);
 		}else {
-			pagePosts = postService.findAll(pagination);
+			pagePosts = postService.findAll(page-1, 9);
 		}
 		
 		model.addAttribute("posts", pagePosts.toList());
