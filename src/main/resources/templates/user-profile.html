@@ -10,6 +10,13 @@
 </head>
 <body>
 	<div class="container my-3">
+	  <nav aria-label="breadcrumb">
+	    <ol class="breadcrumb">
+	      <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+	      <li class="breadcrumb-item active" aria-current="page">Profile</li>
+	    </ol>
+	  </nav>
+	  
 	  <div style="text-align: center;display: flex;align-items: center;justify-content: center;">
 	    <h2 sec:authentication="name"></h2>
 	    <div class="dropdown">

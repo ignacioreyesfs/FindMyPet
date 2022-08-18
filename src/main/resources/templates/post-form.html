@@ -11,7 +11,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-	<div class="container">
+	<div class="container my-3">
 		<div th:if="${paramsError}" class="alert alert-danger col-xs-offset-1 col-xs-10">
 			<span>Error, review the given information</span>
 		</div>
@@ -116,7 +116,7 @@
 			</div>
 
 			<button type="submit" class="btn btn-success" th:text="${isUpdate != null? 'Update': 'Create'}"></button>
-			<a class="btn btn-danger" th:href="@{/posts}" role="button">Cancel</a>
+			<a class="btn btn-secondary" th:href="@{/posts}" role="button">Cancel</a>
 		</form>
 	</div>
 
