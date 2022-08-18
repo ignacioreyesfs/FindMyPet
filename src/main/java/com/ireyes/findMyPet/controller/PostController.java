@@ -79,6 +79,10 @@ public class PostController {
 		PostDTO post = postService.findById(id).orElseThrow(ResourceNotFoundException::new);
 		String referer = request.getHeader("Referer");
 		
+		if(referer.endsWith("/posts/new")) {
+			referer = "/posts";
+		}
+		
 		model.addAttribute("post", post);
 		model.addAttribute("backUrl", referer);
 		
