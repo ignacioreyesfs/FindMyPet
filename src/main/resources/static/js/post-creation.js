@@ -10,7 +10,7 @@ function loadBreeds() {
 		$('#breed').prop("disabled", "disable");
 		$('#breed').html('<option value="" hidden>Select</option>');
 	}else{
-		$.getJSON('http://localhost:8080/breeds', {
+		$.getJSON('/breeds', {
 			petType: $('#petType').val()
 		}, (data) => setOptions($.map(data, (breed) => ({text: breed.name, value: breed.id})), '#breed'));
 	}
@@ -26,7 +26,7 @@ function loadRegions() {
 		$('#region').html(html);
 		$('#subregion').html(html);
 	}else{
-		$.getJSON('http://localhost:8080/regions', {
+		$.getJSON('/regions', {
 			country: $('#country').val()
 		}, (data) => setOptions($.map(data, (name) => ({text: name, value: name})), '#region'));
 	}
@@ -39,7 +39,7 @@ function loadSubRegions() {
 		$('#subregion').prop("disabled", "disable");
 		$('#subregion').html('<option value="" hidden>Select</option>');
 	}else{
-		$.getJSON('http://localhost:8080/subregions', {
+		$.getJSON('/subregions', {
 			country: $('#country').val(),
 			region: $('#region').val()
 		}, (data) => setOptions(
