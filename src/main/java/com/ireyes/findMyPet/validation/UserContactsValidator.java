@@ -22,9 +22,8 @@ public class UserContactsValidator implements ConstraintValidator<ValidUserConta
 		Pattern numberPattern;
 		Matcher matcher;
 		
-		if(contacts == null || contacts.stream().noneMatch(contact -> contact.getType().equals(ContactType.EMAIL))) {
-			setConstraintViolation(context, "At least one email");
-			return false;
+		if(contacts == null) {
+			return true;
 		}
 		
 		emailPattern = Pattern.compile(EMAIL_PATTERN);

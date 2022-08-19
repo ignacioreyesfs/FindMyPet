@@ -19,13 +19,14 @@
 		    <fieldset>
 	    	  <legend>Personal Information</legend>
 	    	  <input type="hidden" th:field="${user.username}" >
+	    	  <input type="hidden" th:field="${user.email}">
 		  	  <div class="mb-3 p-3">
 		  	    <label for="name" class="form-label">Name</label>
 		  	    <input type="text" class="form-control" th:field="${user.firstName}" id="name">
 		  	  </div>
 		  	  <div class="p-3 mb-3" style="border-style: solid;border-width: 1px;">
 		  	  	<div class="mb-3">
-		  	  	  <h6 class="d-inline">Contacts</h6>
+		  	  	  <h6 class="d-inline">Alternative Contacts</h6>
 				  <div class="dynamic-update-rows d-inline">
 				  	<button type="button" name="addContact" class="badge btn btn-sm btn-success float-right"
 				  		data-dynamic-update-rows-url="/user/edit/addContact">
@@ -33,15 +34,15 @@
 				  </div>
 				</div>
 		  	    <div class="dynamic-update-rows">
-		  	    	<p th:if="${#fields.hasErrors('contacts')}" th:errorclass="text-danger" th:errors="${user.contacts}" th:text="${err}"/>
+		  	    	<p th:if="${#fields.hasErrors('alternativeContacts')}" th:errorclass="text-danger" th:errors="${user.alternativeContacts}" th:text="${err}"/>
 		  	    	<div id="dynamicContent">
-			    	  <div class="input-group mb-3" th:fragment="contacts" th:each="contact, stat: ${user.contacts}">
-			    	  	<input type="hidden" th:field="${user.contacts[__${stat.index}__].id}">
-			    	  	<select th:field="${user.contacts[__${stat.index}__].type}" class="form-control" required>
+			    	  <div class="input-group mb-3" th:fragment="contacts" th:each="contact, stat: ${user.alternativeContacts}">
+			    	  	<input type="hidden" th:field="${user.alternativeContacts[__${stat.index}__].id}">
+			    	  	<select th:field="${user.alternativeContacts[__${stat.index}__].type}" class="form-control" required>
 			    	  		<option hidden value="">Select</option>
 			    	  		<option th:each="type: ${contactTypes}" th:value="${type}" th:text="${type}"></option>
 			    	  	</select>
-			    	    <input type="text" class="form-control" th:field="${user.contacts[__${stat.index}__].value}">
+			    	    <input type="text" class="form-control" th:field="${user.alternativeContacts[__${stat.index}__].value}">
 			  	        <div class="btn-group">
 			  	        	<button type="button" name="row"
 			  	        		th:value="${stat.index}" class="btn btn-sm btn-danger"

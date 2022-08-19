@@ -11,7 +11,7 @@ public class PasswordDTO {
 	@NotBlank(message="required")
 	@Size(min = 8, max = 16, message="length between 8-16")
 	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,16}$", 
-		message="8-16 characters, at least one uppercase letter and one number:")
+		message="At least one uppercase letter and one number:")
 	private String value;
 	private String confirmValue;
 	

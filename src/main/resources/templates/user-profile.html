@@ -41,15 +41,25 @@
             <input type="text" readonly class="form-control" id="name" th:value="${user.firstName}"></input>
           </div>
         </div>
-          <div class="p-3" style="border-style: solid;border-width: 1px;">
-          	<h6>Contacts</h6>
-            <div class="mb-3 row" th:each="contact: ${user.contacts}">
-              <label class="col-sm-2 col-form-label" th:text="${contact.type}"></label>
-              <div class="col-sm-10">
-                <input type="text" readonly class="form-control" th:value="${contact.value}"></input>
-              </div>
+        <div class="mb-3 p-3 row">
+          <label for="email" class="col-sm-2 col-form-label">Email</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control" id="email" th:value="${user.email}"></input>
+          </div>
+        </div>
+        <div class="p-3" 
+        		style="border-style: solid;border-width: 1px;">
+        	<h6>Alternative Contacts</h6>
+        	<div th:if="${user.alternativeContacts == null || user.alternativeContacts.isEmpty()}"  style="text-align: center;">
+        		<h6>No alternative contacts</h6>
+        	</div>
+          <div class="mb-3 row" th:each="contact: ${user.alternativeContacts}">
+            <label class="col-sm-2 col-form-label" th:text="${contact.type}"></label>
+            <div class="col-sm-10">
+              <input type="text" readonly class="form-control" th:value="${contact.value}"></input>
             </div>
           </div>
+        </div>
       </div>
 	</div>
 	<div class="container" >

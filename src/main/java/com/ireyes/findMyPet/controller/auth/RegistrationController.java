@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ireyes.findMyPet.service.user.EmailAlreadyExists;
 import com.ireyes.findMyPet.service.user.RegisterDTO;
 import com.ireyes.findMyPet.service.user.UserAlreadyExistsException;
 import com.ireyes.findMyPet.service.user.UserService;
@@ -47,6 +48,10 @@ public class RegistrationController {
 		}catch(UserAlreadyExistsException e) {
 			model.addAttribute("user", userForm);
 			model.addAttribute("registrationError", "User name already exists");
+			return signUpForm;
+		}catch(EmailAlreadyExists e) {
+			model.addAttribute("user", userForm);
+			model.addAttribute("registrationError", "Email already in use");
 			return signUpForm;
 		}
 		

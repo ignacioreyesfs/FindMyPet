@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import com.ireyes.findMyPet.dao.RoleRepository;
 import com.ireyes.findMyPet.dao.UserRepository;
 import com.ireyes.findMyPet.model.user.Contact;
-import com.ireyes.findMyPet.model.user.ContactType;
 import com.ireyes.findMyPet.model.user.Role;
 import com.ireyes.findMyPet.model.user.User;
 
@@ -53,17 +52,21 @@ public class UserService implements UserDetailsService{
 	@Transactional
 	public void save(UserDto userDto) {
 		User user = userRepo.findByUsername(userDto.getUsername()).orElseThrow();
-		user.setContacts(userDto.getContacts());
+		user.setAlternativeContacts(userDto.getAlternativeContacts());
 		user.setFirstName(userDto.getFirstName().trim());
 		userRepo.save(user);
 	}
 	
 	@Transactional
-	public void register(RegisterDTO userForm) throws UserAlreadyExistsException{
+	public void register(RegisterDTO userForm) throws UserAlreadyExistsException, EmailAlreadyExists{
 		User user = new User();
 		
 		if(userRepo.existsByUsername(userForm.getUsername())) {
 			throw new UserAlreadyExistsException(userForm.getUsername());
+		}
+		
+		if(userRepo.existsByEmail(userForm.getEmail())){
+			throw new EmailAlreadyExists(userForm.getEmail());
 		}
 		
 		Role role = roleRepo.findByName("ROLE_USER");
@@ -74,7 +77,7 @@ public class UserService implements UserDetailsService{
 		
 		user.setUsername(userForm.getUsername());
 		user.setPassword(encoder.encode(userForm.getPassword().getValue()));
-		user.addContact(new Contact(ContactType.EMAIL, userForm.getEmail()));
+		user.setEmail(userForm.getEmail());
 		user.setRoles(Arrays.asList(role));
 		userRepo.save(user);
 	}
@@ -94,22 +97,23 @@ public class UserService implements UserDetailsService{
 	
 	private UserDto getUserDto(User user) {
 		UserDto userDto = new UserDto();
-		userDto.setContacts(user.getContacts());
+		userDto.setAlternativeContacts(user.getAlternativeContacts());
 		userDto.setUsername(user.getUsername());
 		userDto.setFirstName(user.getFirstName());
+		userDto.setEmail(user.getEmail());
 		
 		return userDto;
 	}
 	
 	public void addContact(UserDto user) {
-		if(user.getContacts() == null) {
-			user.setContacts(new ArrayList<>());
+		if(user.getAlternativeContacts() == null) {
+			user.setAlternativeContacts(new ArrayList<>());
 		}
-		user.getContacts().add(new Contact());
+		user.getAlternativeContacts().add(new Contact());
 	}
 	
 	public void removeContact(UserDto user, int index) {
-		user.getContacts().remove(index);
+		user.getAlternativeContacts().remove(index);
 	}
 
 	@Override

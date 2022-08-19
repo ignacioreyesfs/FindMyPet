@@ -53,7 +53,8 @@
 		    		th:text="${'RELOCATION URGENCY: ' + post.relocationUrgency}"></p>
 			    <p th:if="${post.description != null && !post.description.isEmpty()}" 
 			    	th:text="${'POST EXTRA INFO: ' + post.description}"></p>
-	    		<p th:each="contact: ${post.user.contacts}" th:text="${contact.type.toString() + ': ' + contact.value}"></p>
+		    	<p th:text="${'EMAIL: ' + post.user.email}"></p>
+	    		<p th:each="contact: ${post.user.alternativeContacts}" th:text="${contact.type.toString() + ': ' + contact.value}"></p>
     		</div>
 	  </div>
 	</div>

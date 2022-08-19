@@ -2,7 +2,6 @@ package com.ireyes.findMyPet.model.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -24,42 +23,40 @@ public class User {
 	private Long id;
 	private String username;
 	private String password;
-	@OneToMany(cascade = {CascadeType.ALL},
-			fetch = FetchType.LAZY)
-	@JoinColumn(name="user_id")
-	private List<Contact> contacts;
 	private String firstName;
+	private String email;
+	
+	@OneToMany(cascade = {CascadeType.ALL},
+			fetch = FetchType.LAZY, orphanRemoval = true)
+	@JoinColumn(name="user_id")
+	private List<Contact> alternativeContacts;
+	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="users_roles", joinColumns = @JoinColumn(name="user_id"),
 			inverseJoinColumns = @JoinColumn(name="role_id"))
 	private List<Role> roles;
 	
 	public User() {
-		contacts = new ArrayList<>();
+		alternativeContacts = new ArrayList<>();
 	}
 	
-	public void addContact(Contact contact) {
-		contacts.add(contact);
+	public void addAlternativeContact(Contact contact) {
+		alternativeContacts.add(contact);
 	}
 	
-	public void removeContact(Contact contact) {
-		contacts.remove(contact);
-	}
-	
-	public String getEmail() {
-		Optional<Contact>email = contacts.stream().
-				filter(contact -> contact.getType() == ContactType.EMAIL).findFirst();
-		return email.isPresent()? email.get().getValue(): null;
+	public void removeAlternativeContact(Contact contact) {
+		alternativeContacts.remove(contact);
 	}
 	
 	// GETTERS AND SETTERS
 	
-	public List<Contact> getContacts() {
-		return contacts;
+	public List<Contact> getAlternativeContacts() {
+		return alternativeContacts;
 	}
 
-	public void setContacts(List<Contact> contacts) {
-		this.contacts = contacts;
+	public void setAlternativeContacts(List<Contact> contacts) {
+		this.alternativeContacts.clear();
+		this.alternativeContacts.addAll(contacts);
 	}
 
 	public String getFirstName() {
@@ -100,5 +97,13 @@ public class User {
 
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

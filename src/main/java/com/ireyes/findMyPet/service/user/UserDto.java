@@ -2,6 +2,7 @@ package com.ireyes.findMyPet.service.user;
 
 import java.util.List;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 import com.ireyes.findMyPet.model.user.Contact;
@@ -11,8 +12,11 @@ public class UserDto {
 	@NotEmpty
 	private String username;
 	private String firstName;
+	@NotEmpty
+	@Email
+	private String email;
 	@ValidUserContacts
-	private List<Contact> contacts;
+	private List<Contact> alternativeContacts;
 	
 	// GETTERS AND SETTERS
 	
@@ -28,10 +32,16 @@ public class UserDto {
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-	public List<Contact> getContacts() {
-		return contacts;
+	public List<Contact> getAlternativeContacts() {
+		return alternativeContacts;
 	}
-	public void setContacts(List<Contact> contacts) {
-		this.contacts = contacts;
+	public void setAlternativeContacts(List<Contact> contacts) {
+		this.alternativeContacts = contacts;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
