@@ -25,6 +25,7 @@ public class User {
 	private String password;
 	private String firstName;
 	private String email;
+	private boolean enabled;
 	
 	@OneToMany(cascade = {CascadeType.ALL},
 			fetch = FetchType.LAZY, orphanRemoval = true)
@@ -38,6 +39,7 @@ public class User {
 	
 	public User() {
 		alternativeContacts = new ArrayList<>();
+		enabled = false;
 	}
 	
 	public void addAlternativeContact(Contact contact) {
@@ -105,5 +107,13 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }

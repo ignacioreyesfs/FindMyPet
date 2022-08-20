@@ -15,4 +15,15 @@ public class EmailConfig {
 				+ "Yours sincerely, FindMyDog.");
 		return message;
 	}
+	
+	@Bean(name="registrationValidatorTemplate")
+	public SimpleMailMessage registrationValidatorTemplate() {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setSubject("Account Validation");
+		message.setText("Hi, \n\nUse the following code to confirm you FindMyPet account:\n\n"
+				+ "%s\n\nIf you have not registered on our site, please ignore this email.\n\n"
+				+ "Yours sincerely, FindMyDog.");
+		
+		return message;
+	}
 }

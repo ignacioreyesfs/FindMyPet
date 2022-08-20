@@ -2,8 +2,10 @@ package com.ireyes.findMyPet.service.user;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -20,9 +22,12 @@ import org.springframework.stereotype.Service;
 
 import com.ireyes.findMyPet.dao.RoleRepository;
 import com.ireyes.findMyPet.dao.UserRepository;
+import com.ireyes.findMyPet.dao.ValidationTokenRepository;
+import com.ireyes.findMyPet.exception.InvalidTokenException;
 import com.ireyes.findMyPet.model.user.Contact;
 import com.ireyes.findMyPet.model.user.Role;
 import com.ireyes.findMyPet.model.user.User;
+import com.ireyes.findMyPet.model.user.token.ValidationToken;
 
 @Service
 public class UserService implements UserDetailsService{
@@ -30,6 +35,8 @@ public class UserService implements UserDetailsService{
 	private UserRepository userRepo;
 	@Autowired
 	private RoleRepository roleRepo;
+	@Autowired
+	private ValidationTokenRepository tokenRepo;
 	@Autowired
 	@Lazy
 	private PasswordEncoder encoder;
@@ -58,7 +65,7 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public void register(RegisterDTO userForm) throws UserAlreadyExistsException, EmailAlreadyExists{
+	public User register(RegisterDTO userForm) throws UserAlreadyExistsException, EmailAlreadyExists{
 		User user = new User();
 		
 		if(userRepo.existsByUsername(userForm.getUsername())) {
@@ -79,7 +86,8 @@ public class UserService implements UserDetailsService{
 		user.setPassword(encoder.encode(userForm.getPassword().getValue()));
 		user.setEmail(userForm.getEmail());
 		user.setRoles(Arrays.asList(role));
-		userRepo.save(user);
+		
+		return userRepo.save(user);
 	}
 	
 	@Transactional
@@ -115,16 +123,42 @@ public class UserService implements UserDetailsService{
 	public void removeContact(UserDto user, int index) {
 		user.getAlternativeContacts().remove(index);
 	}
+	
+	@Transactional
+	public ValidationToken createValidationToken(User user) {
+		ValidationToken token = new ValidationToken();
+		token.setUser(user);
+		token.setToken(UUID.randomUUID().toString());
+		token.setExpirationTime(60);
+		
+		tokenRepo.save(token);
+		
+		return token;
+	}
+	
+	@Transactional
+	public void validateAccount(String token) {
+		ValidationToken validationToken = tokenRepo.findByToken(token);
+		User user;
+		
+		if(validationToken == null || validationToken.getExpirationDate() < Calendar.getInstance().getTimeInMillis()) {
+			throw new InvalidTokenException();
+		}
+		
+		user = validationToken.getUser();
+		user.setEnabled(true);
+		
+		userRepo.save(user);		
+		tokenRepo.deleteById(validationToken.getId());
+	}
 
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> user = userRepo.findByUsername(username);
-		if(!user.isPresent()) {
-			throw new UsernameNotFoundException("Username does not exists");
-		}
-		return new org.springframework.security.core.userdetails.User(user.get().getUsername(), 
-				user.get().getPassword(), mapRolesToAuthorities(user.get().getRoles()));
+		User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username does not exists"));
+
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), 
+				user.getPassword(), user.isEnabled(), true, true, true, mapRolesToAuthorities(user.getRoles()));
 	}
 	
 	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
