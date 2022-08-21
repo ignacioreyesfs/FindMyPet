@@ -20,7 +20,7 @@ import com.ireyes.findMyPet.controller.ResourceNotFoundException;
 import com.ireyes.findMyPet.exception.InvalidTokenException;
 import com.ireyes.findMyPet.exception.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.model.user.User;
-import com.ireyes.findMyPet.model.user.token.RegistrationCompleteEvent;
+import com.ireyes.findMyPet.model.user.register.RegistrationCompleteEvent;
 import com.ireyes.findMyPet.service.user.EmailAlreadyExists;
 import com.ireyes.findMyPet.service.user.RegisterDTO;
 import com.ireyes.findMyPet.service.user.UserAlreadyExistsException;
@@ -79,13 +79,15 @@ public class RegistrationController {
 	}
 	
 	@PostMapping("/confirm-account")
-	public String confirmAccount(@RequestParam String code, Model model) {
+	public String confirmAccount(@RequestParam String code, Model model, RedirectAttributes redirect) {
 		try {
 			userService.validateAccount(code);
 		}catch(InvalidTokenException e) {
 			model.addAttribute("errorMessage", "Invalid or expired token");
 			return "confirm-account";
 		}
+		
+		redirect.addFlashAttribute("successMessage", "User created");
 		
 		return "redirect:/login";
 	}

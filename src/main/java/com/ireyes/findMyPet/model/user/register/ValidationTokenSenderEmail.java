@@ -1,4 +1,4 @@
-package com.ireyes.findMyPet.model.user.token;
+package com.ireyes.findMyPet.model.user.register;
 
 import java.util.logging.Logger;
 
@@ -12,7 +12,7 @@ import com.ireyes.findMyPet.exception.CannotSendTokenException;
 import com.ireyes.findMyPet.model.email.EmailService;
 
 @Component
-public class EmailValidationTokenSender implements ValidationTokenSender{
+public class ValidationTokenSenderEmail implements ValidationTokenSender{
 	@Autowired
 	private EmailService emailService;
 	@Autowired

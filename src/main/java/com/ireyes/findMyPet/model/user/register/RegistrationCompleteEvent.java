@@ -1,4 +1,4 @@
-package com.ireyes.findMyPet.model.user.token;
+package com.ireyes.findMyPet.model.user.register;
 
 import com.ireyes.findMyPet.model.user.User;
 

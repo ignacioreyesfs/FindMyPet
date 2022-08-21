@@ -1,4 +1,4 @@
-package com.ireyes.findMyPet.model.user.token;
+package com.ireyes.findMyPet.model.user.passwordreset;
 
 import java.util.Calendar;
 
@@ -12,7 +12,7 @@ import javax.persistence.OneToOne;
 import com.ireyes.findMyPet.model.user.User;
 
 @Entity
-public class ValidationToken {
+public class PasswordResetToken {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -44,13 +44,5 @@ public class ValidationToken {
 	}
 	public long getExpirationDate() {
 		return expirationDate;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 }

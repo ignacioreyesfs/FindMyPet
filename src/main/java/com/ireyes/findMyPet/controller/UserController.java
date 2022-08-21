@@ -112,4 +112,51 @@ public class UserController {
 		model.addAttribute("user", user);
 		return "user-edit :: contacts";
 	}
+	
+	@GetMapping("/password-reset")
+	public String showResetPassword() {
+		return "send-password-reset";
+	}
+	
+	@PostMapping("/send-password-reset")
+	public String sendPasswordReset(@RequestParam String email, Model model) {
+		try {
+			userService.sendResetPasswordToken(email);
+		}catch(ResourceNotFoundException e) {
+			model.addAttribute("errorMessage", "Email does not correspond to an user");
+			return "send-password-reset";
+		}
+		
+		return "redirect:/change-password";
+	}
+	
+	@GetMapping("/change-password")
+	public String changePassword(Model model) {
+		model.addAttribute("newPassword", new PasswordDTO());
+		return "password-reset";
+	}
+	
+	@PostMapping("/change-password")
+	public String changePassword(@RequestParam String code, @Valid @ModelAttribute PasswordDTO newPassword,
+			BindingResult br, Model model, RedirectAttributes redirect) {
+		
+		if(br.hasErrors()) {
+			model.addAttribute("code", code);
+			model.addAttribute("newPassword", newPassword);
+			model.addAttribute(BindingResult.MODEL_KEY_PREFIX+"newPassword", br);
+			return "password-reset";
+		}
+		
+		try {
+			userService.resetPassword(code, newPassword.getValue());
+		}catch(ResourceNotFoundException e) {
+			model.addAttribute("newPassword", newPassword);
+			model.addAttribute("errorMessage", "Invalid or expired token");
+			return "password-reset";
+		}
+		
+		redirect.addFlashAttribute("successMessage", "Password changed");
+		
+		return "redirect:/login";
+	}
 }

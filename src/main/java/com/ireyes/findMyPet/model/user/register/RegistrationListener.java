@@ -1,4 +1,4 @@
-package com.ireyes.findMyPet.model.user.token;
+package com.ireyes.findMyPet.model.user.register;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;

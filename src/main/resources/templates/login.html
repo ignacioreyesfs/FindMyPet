@@ -22,9 +22,9 @@
 	    <div th:if="${param.error != null}"  class="alert alert-danger col-xs-offset-1 col-xs-10"
 	    	th:text="${session[SPRING_SECURITY_LAST_EXCEPTION].getMessage().equals('User is disabled')? 'Unconfirmed account': 'Invalid username / password'}" 
 	  		>error</div>
-   		<div th:if="${userCreated}" class="alert alert-success col-xs-offset-1 col-xs-10">
-			<span>User created successfully</span>
-		</div>
+   	    <div th:if="${successMessage != null}" class="alert alert-success col-xs-offset-1 col-xs-10">
+	   	<span th:text="${successMessage}">Success</span>
+	    </div>
 		<h2>Sign Up</h2>
 		<hr>
         <div class="form-group">
@@ -51,8 +51,10 @@
             <button type="submit" class="btn btn-primary btn-lg">Login</button>
         </div>
     </form>
-	<div class="text-center">Don't have an account? <a th:href="@{/register}">Create</a></div>
+    
+	<div class="text-center">Forgot password? <a th:href="@{/password-reset}">Reset</a></div>
 	<div class="text-center">Unconfirmed account? <a th:href="@{/confirm-account}">Confirm Account</a></div>
+	<div class="text-center">Don't have an account? <a th:href="@{/register}">Create</a></div>
 </div>
 </body>
 </html>

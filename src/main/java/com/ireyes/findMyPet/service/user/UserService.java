@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ireyes.findMyPet.controller.ResourceNotFoundException;
+import com.ireyes.findMyPet.dao.PasswordResetTokenRepo;
 import com.ireyes.findMyPet.dao.RoleRepository;
 import com.ireyes.findMyPet.dao.UserRepository;
 import com.ireyes.findMyPet.dao.ValidationTokenRepository;
@@ -29,8 +30,10 @@ import com.ireyes.findMyPet.exception.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.model.user.Contact;
 import com.ireyes.findMyPet.model.user.Role;
 import com.ireyes.findMyPet.model.user.User;
-import com.ireyes.findMyPet.model.user.token.ValidationToken;
-import com.ireyes.findMyPet.model.user.token.ValidationTokenSender;
+import com.ireyes.findMyPet.model.user.passwordreset.PasswordResetToken;
+import com.ireyes.findMyPet.model.user.passwordreset.PasswordResetTokenSender;
+import com.ireyes.findMyPet.model.user.register.ValidationToken;
+import com.ireyes.findMyPet.model.user.register.ValidationTokenSender;
 
 @Service
 public class UserService implements UserDetailsService{
@@ -39,12 +42,16 @@ public class UserService implements UserDetailsService{
 	@Autowired
 	private RoleRepository roleRepo;
 	@Autowired
-	private ValidationTokenRepository tokenRepo;
+	private ValidationTokenRepository validationTokenRepo;
 	@Autowired
 	@Lazy
 	private PasswordEncoder encoder;
 	@Autowired
-	private ValidationTokenSender tokenSender;
+	private ValidationTokenSender validationTokenSender;
+	@Autowired
+	private PasswordResetTokenSender passwordResetTokenSender;
+	@Autowired
+	private PasswordResetTokenRepo passwordResetTokenRepo;
 	
 	@Transactional
 	public Optional<User> findByUsername(String username){
@@ -136,14 +143,15 @@ public class UserService implements UserDetailsService{
 		token.setToken(UUID.randomUUID().toString());
 		token.setExpirationTime(60);
 		
-		tokenRepo.save(token);
+		validationTokenRepo.deleteByUser(user);
+		validationTokenRepo.save(token);
 		
 		return token;
 	}
 	
 	@Transactional
 	public void validateAccount(String token) {
-		ValidationToken validationToken = tokenRepo.findByToken(token);
+		ValidationToken validationToken = validationTokenRepo.findByToken(token);
 		User user;
 		
 		if(validationToken == null || validationToken.getExpirationDate() < Calendar.getInstance().getTimeInMillis()) {
@@ -154,7 +162,7 @@ public class UserService implements UserDetailsService{
 		user.setEnabled(true);
 		
 		userRepo.save(user);		
-		tokenRepo.deleteById(validationToken.getId());
+		validationTokenRepo.deleteById(validationToken.getId());
 	}
 	
 	@Transactional
@@ -165,13 +173,52 @@ public class UserService implements UserDetailsService{
 			throw new UserAlreadyEnabledException();
 		}
 		
-		ValidationToken token = tokenRepo.findByUser(user);
+		ValidationToken token = validationTokenRepo.findByUser(user);
 		
 		if(token == null || token.getExpirationDate() <= Calendar.getInstance().getTimeInMillis()) {
 			token = createValidationToken(user);
 		}
 		
-		tokenSender.sendValidationTokenAync(email, token.getToken());
+		validationTokenSender.sendValidationTokenAync(email, token.getToken());
+	}
+	
+	@Transactional
+	public void sendResetPasswordToken(String email) throws ResourceNotFoundException{
+		User user = userRepo.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
+		PasswordResetToken token = passwordResetTokenRepo.findByUser(user);
+		
+		if(token == null || token.getExpirationDate() <= Calendar.getInstance().getTimeInMillis()) {
+			token = createPasswordResetToken(user);
+		}
+		
+		passwordResetTokenSender.sendPasswordResetTokenAsync(email, token.getToken());		
+	}
+	
+	@Transactional
+	private PasswordResetToken createPasswordResetToken(User user) {
+		PasswordResetToken token = new PasswordResetToken();
+		token.setUser(user);
+		token.setToken(UUID.randomUUID().toString());
+		token.setExpirationTime(10);
+		
+		passwordResetTokenRepo.deleteByUser(user);
+		passwordResetTokenRepo.save(token);
+		
+		return token;
+	}
+	
+	@Transactional
+	public void resetPassword(String token, String newPassword) throws ResourceNotFoundException{
+		PasswordResetToken pwResetToken = passwordResetTokenRepo.findByToken(token);
+		if(pwResetToken == null || pwResetToken.getExpirationDate() <= Calendar.getInstance().getTimeInMillis()) {
+			throw new ResourceNotFoundException();
+		}
+		
+		User user = pwResetToken.getUser();
+				
+		user.setPassword(encoder.encode(newPassword));
+		userRepo.save(user);
+		passwordResetTokenRepo.delete(pwResetToken);
 	}
 
 	@Override
