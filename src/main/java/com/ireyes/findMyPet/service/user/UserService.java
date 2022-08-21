@@ -20,14 +20,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ireyes.findMyPet.controller.ResourceNotFoundException;
 import com.ireyes.findMyPet.dao.RoleRepository;
 import com.ireyes.findMyPet.dao.UserRepository;
 import com.ireyes.findMyPet.dao.ValidationTokenRepository;
 import com.ireyes.findMyPet.exception.InvalidTokenException;
+import com.ireyes.findMyPet.exception.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.model.user.Contact;
 import com.ireyes.findMyPet.model.user.Role;
 import com.ireyes.findMyPet.model.user.User;
 import com.ireyes.findMyPet.model.user.token.ValidationToken;
+import com.ireyes.findMyPet.model.user.token.ValidationTokenSender;
 
 @Service
 public class UserService implements UserDetailsService{
@@ -40,6 +43,8 @@ public class UserService implements UserDetailsService{
 	@Autowired
 	@Lazy
 	private PasswordEncoder encoder;
+	@Autowired
+	private ValidationTokenSender tokenSender;
 	
 	@Transactional
 	public Optional<User> findByUsername(String username){
@@ -150,6 +155,23 @@ public class UserService implements UserDetailsService{
 		
 		userRepo.save(user);		
 		tokenRepo.deleteById(validationToken.getId());
+	}
+	
+	@Transactional
+	public void resendAccountConfirmationToken(String email) throws ResourceNotFoundException, UserAlreadyEnabledException{
+		User user = userRepo.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
+		
+		if(user.isEnabled()) {
+			throw new UserAlreadyEnabledException();
+		}
+		
+		ValidationToken token = tokenRepo.findByUser(user);
+		
+		if(token == null || token.getExpirationDate() <= Calendar.getInstance().getTimeInMillis()) {
+			token = createValidationToken(user);
+		}
+		
+		tokenSender.sendValidationTokenAync(email, token.getToken());
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package com.ireyes.findMyPet.controller.auth;
 import java.security.Principal;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ireyes.findMyPet.controller.ResourceNotFoundException;
 import com.ireyes.findMyPet.exception.InvalidTokenException;
+import com.ireyes.findMyPet.exception.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.model.user.User;
 import com.ireyes.findMyPet.model.user.token.RegistrationCompleteEvent;
 import com.ireyes.findMyPet.service.user.EmailAlreadyExists;
@@ -45,7 +47,7 @@ public class RegistrationController {
 	
 	@PostMapping("/register")
 	public String showRegister(@Valid @ModelAttribute("user") RegisterDTO userForm,
-			BindingResult br, Model model, HttpServletRequest req) {
+			BindingResult br, Model model) {
 		User user;
 		
 		if(br.hasErrors()) {
@@ -86,5 +88,27 @@ public class RegistrationController {
 		}
 		
 		return "redirect:/login";
+	}
+	
+	@GetMapping("/resend-confirmation")
+	public String showResendConfirmation() {
+		return "resend-confirmation";
+	}
+	
+	@PostMapping("/resend-confirmation")
+	public String resendConfirmation(@RequestParam String email, Model model, RedirectAttributes redirect) {
+		try {
+			userService.resendAccountConfirmationToken(email);
+		}catch(ResourceNotFoundException e) {
+			model.addAttribute("errorMessage", "Email does not correspond to an user");
+			return "resend-confirmation";
+		}catch(UserAlreadyEnabledException e) {
+			model.addAttribute("errorMessage", "Email user is already active");
+			return "resend-confirmation";
+		}
+		
+		redirect.addFlashAttribute("successMessage", "Confirmation token resend");
+		
+		return "redirect:/confirm-account";
 	}
 }
