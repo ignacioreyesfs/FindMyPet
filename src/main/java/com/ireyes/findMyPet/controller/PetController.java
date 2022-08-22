@@ -2,8 +2,10 @@ package com.ireyes.findMyPet.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.pet.Breed;
 import com.ireyes.findMyPet.model.pet.PetType;
@@ -26,6 +29,7 @@ public class PetController {
 	private PetService petService;
 	@Autowired
 	private StorageService storageService;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	@GetMapping("/admin/petType/new")
 	public String showCreatePetType(Model model) {
@@ -40,6 +44,25 @@ public class PetController {
 		}
 		
 		petService.savePetType(petType);
+		
+		return "redirect:/admin";
+	}
+	
+	@GetMapping("/admin/petType/delete")
+	public String showDeletePetType(Model model) {
+		model.addAttribute("petType", new PetType());
+		model.addAttribute("petTypes", petService.findAllPetTypes());
+		return "petType-delete";
+	}
+	
+	@PostMapping("/admin/petType/delete")
+	public String deletePetType(@ModelAttribute PetType petType, RedirectAttributes redirect) {
+		try {
+			petService.deletePetType(petType);
+		}catch(DataIntegrityViolationException e) {
+			logger.info("Cannot delete pet type in use " + petType.getId());
+			redirect.addFlashAttribute("errorMessage", "Cannot delete pet type in use");
+		}
 		
 		return "redirect:/admin";
 	}
@@ -60,6 +83,24 @@ public class PetController {
 		
 		petService.saveBreed(breed);
 		
+		return "redirect:/admin";
+	}
+	
+	@GetMapping("/admin/breed/delete")
+	public String showDeleteBreed(Model model) {
+		model.addAttribute("petTypes", petService.findAllPetTypes());
+		model.addAttribute("breed", new Breed());
+		return "breed-delete";
+	}
+	
+	@PostMapping("/admin/breed/delete")
+	public String deleteBreed(@ModelAttribute Breed breed, RedirectAttributes redirect) {
+		try {
+			petService.deleteBreed(breed);
+		}catch(DataIntegrityViolationException e) {
+			logger.info("Cannot delete breed in use " + breed.getId());
+			redirect.addFlashAttribute("errorMessage", "Cannot delete breed in use");
+		}
 		return "redirect:/admin";
 	}
 	

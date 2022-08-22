@@ -1,8 +1,10 @@
 package com.ireyes.findMyPet.controller;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.post.Location;
 import com.ireyes.findMyPet.service.LocationService;
@@ -19,6 +22,7 @@ import com.ireyes.findMyPet.service.LocationService;
 public class LocationController {
 	@Autowired
 	private LocationService locationService;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	@GetMapping("/admin/location/new")
 	public String showCreateLocation(Model model) {
@@ -34,6 +38,24 @@ public class LocationController {
 		
 		locationService.save(location);
 		
+		return "redirect:/admin";
+	}
+	
+	@GetMapping("/admin/location/delete")
+	public String showDeleteLocation(Model model) {
+		model.addAttribute("countries", locationService.findAllCountries());
+		model.addAttribute("location", new Location());
+		return "location-delete";
+	}
+	
+	@PostMapping("/admin/location/delete")
+	public String deleteLocation(@ModelAttribute Location location, RedirectAttributes redirect) {
+		try {
+			locationService.deleteLocation(location);
+		}catch(DataIntegrityViolationException e) {
+			logger.info("Cannot delete location in use " + location.getId());
+			redirect.addFlashAttribute("errorMessage", "Cannot delete location in use");
+		}
 		return "redirect:/admin";
 	}
 	

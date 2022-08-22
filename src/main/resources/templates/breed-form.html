@@ -7,21 +7,24 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-
-<form th:action="@{/admin/breed/new}" method="POST" th:object="${breed}">
-  <div class="form-group">
-    <label for="name">Name:</label>
-    <input type="text" class="form-control" id="name" required="required" th:field="*{name}">
-  </div>
-  <div class="form-group">
-  	<label for="petType">Pet Type:</label>
-  	<select th:field="*{petType}" id="petType">
-    	<option th:each="type: ${petTypes}" th:value="${type.id}" th:text="${type.name}">
-    	</option>
-  	</select>
-  </div>
-  <button type="submit" class="btn btn-default">Create</button>
-</form> 
+<div class="container my-3">
+	<form th:action="@{/admin/breed/new}" method="POST" th:object="${breed}">
+	  <div class="form-group">
+	  	<label for="petType">Pet Type:</label>
+	  	<select class="form-control" th:field="*{petType}" id="petType" required>
+	  		<option value="" hidden>Select</option>
+	    	<option th:each="type: ${petTypes}" th:value="${type.id}" th:text="${type.name}">
+	    	</option>
+	  	</select>
+	  </div>
+	  <div class="form-group">
+	    <label for="name">Breed Name:</label>
+	    <input type="text" class="form-control" id="name" required="required" th:field="*{name}">
+	  </div>
+	  <button type="submit" class="btn btn-success">Create</button>
+	  <a class="btn btn-secondary" th:href="@{/admin}" role="button">Cancel</a>
+	</form>
+</div>
 
 </body>
 </html>

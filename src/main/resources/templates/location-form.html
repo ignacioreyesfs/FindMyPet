@@ -7,22 +7,24 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-
-<form th:action="@{/admin/location/new}" method="POST" th:object="${location}">
-  <div class="form-group">
-    <label for="country">Country:</label>
-    <input type="text" class="form-control" id="country" required="required" th:field="*{country}">
-  </div>
-  <div class="form-group">
-    <label for="region">Region:</label>
-    <input type="text" class="form-control" id="region" required="required" th:field="*{region}">
-  </div>
-  <div class="form-group">
-    <label for="subRegion">Sub Region:</label>
-    <input type="text" class="form-control" id="subRegion" required="required" th:field="*{subRegion}">
-  </div>
-  <button type="submit" class="btn btn-default">Create</button>
-</form> 
+<div class="container my-3">
+	<form th:action="@{/admin/location/new}" method="POST" th:object="${location}">
+	  <div class="form-group">
+	    <label for="country">Country:</label>
+	    <input type="text" class="form-control" id="country" required="required" th:field="*{country}">
+	  </div>
+	  <div class="form-group">
+	    <label for="region">Region:</label>
+	    <input type="text" class="form-control" id="region" required="required" th:field="*{region}">
+	  </div>
+	  <div class="form-group">
+	    <label for="subRegion">Sub Region:</label>
+	    <input type="text" class="form-control" id="subRegion" required="required" th:field="*{subRegion}">
+	  </div>
+	  <button type="submit" class="btn btn-success">Create</button>
+	  <a class="btn btn-secondary" th:href="@{/admin}" role="button">Cancel</a>
+	</form>
+</div>
 
 </body>
 </html>

@@ -66,9 +66,19 @@ public class PetService {
 	}
 	
 	@Transactional
+	public void deletePetType(PetType petType) {
+		typeRepo.delete(petType);
+	}
+	
+	@Transactional
 	public Breed saveBreed(Breed breed) {
 		breed.setName(breed.getName().toUpperCase());
 		return breedRepo.save(breed);
+	}
+	
+	@Transactional
+	public void deleteBreed(Breed breed) {
+		breedRepo.delete(breed);
 	}
 	
 	@Transactional

@@ -1,73 +1,10 @@
-$(document).ready(loadBreeds);
-$(document).ready(loadRegions);
-$(document).ready(loadSubRegions);
+import './breed-load.js';
+import './location-load.js';
+
 $(document).ready(displayExtraFields);
 $(document).ready(() => {
 	$('#date').prop("max", new Date().toISOString().split("T")[0]);
-})
-
-$('#petType').change(loadBreeds);
-
-function loadBreeds() {
-	if($('#petType').val() == ''){
-		$('#breed').prop("disabled", "disable");
-		$('#breed').html('<option value="" hidden>Select</option>');
-	}else{
-		$.getJSON('/breeds', {
-			petType: $('#petType').val()
-		}, (data) => setOptions($.map(data, (breed) => ({text: breed.name, value: breed.id})), '#breed'));
-	}
-}
-
-$('#country').change(loadRegions);
-
-function loadRegions() {
-	if($('#country').val() == ''){
-		let html = '<option value="" hidden>Select</option>';
-		$('#region').prop("disabled", "disable");
-		$('#subregion').prop("disabled", "disable");
-		$('#region').html(html);
-		$('#subregion').html(html);
-	}else{
-		$.getJSON('/regions', {
-			country: $('#country').val()
-		}, (data) => setOptions($.map(data, (name) => ({text: name, value: name})), '#region'));
-	}
-}
-
-$('#region').change(loadSubRegions);
-
-function loadSubRegions() {
-	if($('#region').val() == ''){
-		$('#subregion').prop("disabled", "disable");
-		$('#subregion').html('<option value="" hidden>Select</option>');
-	}else{
-		$.getJSON('/subregions', {
-			country: $('#country').val(),
-			region: $('#region').val()
-		}, (data) => setOptions(
-			$.map(data, (location) => ({text: location.subRegion, value: location.id})), '#subregion'));
-	}
-}
-
-function setOptions(data, itemSearch){
-	let html = '<option value="" hidden>Select</option>';
-	let actualVal = $(itemSearch).val();
-	let len = data.length;
-	for (let i = 0; i < len; i++) {
-		html += '<option value="' + data[i].value+ '"';
-		
-		if(actualVal != null && actualVal == data[i].value){
-			html+=' selected';
-		}
-		
-		html+='>' + data[i].text + '</option>';
-		
-	}
-	html += '</option>';
-	$(itemSearch).removeAttr("disabled");
-	$(itemSearch).html(html);
-}
+});
 
 $('#postType').change(displayExtraFields);
 

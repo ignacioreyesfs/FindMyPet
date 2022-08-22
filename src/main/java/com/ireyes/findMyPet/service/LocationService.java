@@ -31,4 +31,8 @@ public class LocationService {
 	public List<Location> findByCountryAndRegion(String country, String region){
 		return locationRepo.findByCountryAndRegion(country, region);
 	}
+	
+	public void deleteLocation(Location location) {
+		locationRepo.delete(location);
+	}
 }
