@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,7 +12,9 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,8 +33,10 @@ import com.ireyes.findMyPet.exception.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.model.user.Contact;
 import com.ireyes.findMyPet.model.user.Role;
 import com.ireyes.findMyPet.model.user.User;
+import com.ireyes.findMyPet.model.user.passwordreset.OnPasswordResetTokenExpire;
 import com.ireyes.findMyPet.model.user.passwordreset.PasswordResetToken;
 import com.ireyes.findMyPet.model.user.passwordreset.PasswordResetTokenSender;
+import com.ireyes.findMyPet.model.user.register.OnValidationTokenExpire;
 import com.ireyes.findMyPet.model.user.register.ValidationToken;
 import com.ireyes.findMyPet.model.user.register.ValidationTokenSender;
 
@@ -52,6 +57,10 @@ public class UserService implements UserDetailsService{
 	private PasswordResetTokenSender passwordResetTokenSender;
 	@Autowired
 	private PasswordResetTokenRepo passwordResetTokenRepo;
+	@Autowired
+	private ThreadPoolTaskScheduler taskScheduler;
+	@Autowired
+	private ApplicationContext context;
 	
 	@Transactional
 	public Optional<User> findByUsername(String username){
@@ -139,12 +148,17 @@ public class UserService implements UserDetailsService{
 	@Transactional
 	public ValidationToken createValidationToken(User user) {
 		ValidationToken token = new ValidationToken();
+		OnValidationTokenExpire onValidationTokenExpire = context.getBean(OnValidationTokenExpire.class);
+		
 		token.setUser(user);
 		token.setToken(UUID.randomUUID().toString());
 		token.setExpirationTime(60);
 		
 		validationTokenRepo.deleteByUser(user);
-		validationTokenRepo.save(token);
+		token = validationTokenRepo.save(token);
+		
+		onValidationTokenExpire.setId(token.getId());
+		taskScheduler.schedule(onValidationTokenExpire, new Date(token.getExpirationDate()));
 		
 		return token;
 	}
@@ -197,12 +211,17 @@ public class UserService implements UserDetailsService{
 	@Transactional
 	private PasswordResetToken createPasswordResetToken(User user) {
 		PasswordResetToken token = new PasswordResetToken();
+		OnPasswordResetTokenExpire onPasswordResetTokenExpire = context.getBean(OnPasswordResetTokenExpire.class);
+		
 		token.setUser(user);
 		token.setToken(UUID.randomUUID().toString());
 		token.setExpirationTime(10);
 		
 		passwordResetTokenRepo.deleteByUser(user);
-		passwordResetTokenRepo.save(token);
+		token = passwordResetTokenRepo.save(token);
+		
+		onPasswordResetTokenExpire.setId(token.getId());
+		taskScheduler.schedule(onPasswordResetTokenExpire, new Date(token.getExpirationDate()));
 		
 		return token;
 	}

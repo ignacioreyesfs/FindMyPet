@@ -45,4 +45,12 @@ public class PasswordResetToken {
 	public long getExpirationDate() {
 		return expirationDate;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }
