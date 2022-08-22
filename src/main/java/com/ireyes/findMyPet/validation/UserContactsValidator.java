@@ -26,6 +26,11 @@ public class UserContactsValidator implements ConstraintValidator<ValidUserConta
 			return true;
 		}
 		
+		if(contacts.size() > 3) {
+			setConstraintViolation(context, "No more than three alternative contacts are allowed");
+			return false;
+		}
+		
 		emailPattern = Pattern.compile(EMAIL_PATTERN);
 		numberPattern = Pattern.compile(PHONE_PATTERN);
 		
