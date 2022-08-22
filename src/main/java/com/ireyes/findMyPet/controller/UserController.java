@@ -118,7 +118,7 @@ public class UserController {
 		return "send-password-reset";
 	}
 	
-	@PostMapping("/send-password-reset")
+	@PostMapping("/password-reset")
 	public String sendPasswordReset(@RequestParam String email, Model model) {
 		try {
 			userService.sendResetPasswordToken(email);
