@@ -1,4 +1,4 @@
-package com.ireyes.findMyPet.exception;
+package com.ireyes.findMyPet.model.user.passwordreset;
 
 public class CannotSendTokenException extends RuntimeException{
 	public CannotSendTokenException(String contact, Throwable e) {

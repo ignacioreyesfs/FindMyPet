@@ -28,8 +28,6 @@ import com.ireyes.findMyPet.dao.PasswordResetTokenRepo;
 import com.ireyes.findMyPet.dao.RoleRepository;
 import com.ireyes.findMyPet.dao.UserRepository;
 import com.ireyes.findMyPet.dao.ValidationTokenRepository;
-import com.ireyes.findMyPet.exception.InvalidTokenException;
-import com.ireyes.findMyPet.exception.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.model.user.Contact;
 import com.ireyes.findMyPet.model.user.Role;
 import com.ireyes.findMyPet.model.user.User;
@@ -68,7 +66,7 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public Optional<UserDto> findDtoByUsername(String username){
+	public Optional<UserDTO> findDtoByUsername(String username){
 		Optional<User> user = userRepo.findByUsername(username);
 		if(user.isEmpty()) {
 			return Optional.empty();
@@ -78,10 +76,10 @@ public class UserService implements UserDetailsService{
 	}
 	
 	@Transactional
-	public void save(UserDto userDto) {
-		User user = userRepo.findByUsername(userDto.getUsername()).orElseThrow();
-		user.setAlternativeContacts(userDto.getAlternativeContacts());
-		user.setFirstName(userDto.getFirstName().trim());
+	public void save(UserDTO userDTO) {
+		User user = userRepo.findByUsername(userDTO.getUsername()).orElseThrow();
+		user.setAlternativeContacts(userDTO.getAlternativeContacts());
+		user.setFirstName(userDTO.getFirstName().trim());
 		userRepo.save(user);
 	}
 	
@@ -124,24 +122,24 @@ public class UserService implements UserDetailsService{
 		return encoder.matches(password, user.getPassword());
 	}
 	
-	private UserDto getUserDto(User user) {
-		UserDto userDto = new UserDto();
-		userDto.setAlternativeContacts(user.getAlternativeContacts());
-		userDto.setUsername(user.getUsername());
-		userDto.setFirstName(user.getFirstName());
-		userDto.setEmail(user.getEmail());
+	private UserDTO getUserDto(User user) {
+		UserDTO userDTO = new UserDTO();
+		userDTO.setAlternativeContacts(user.getAlternativeContacts());
+		userDTO.setUsername(user.getUsername());
+		userDTO.setFirstName(user.getFirstName());
+		userDTO.setEmail(user.getEmail());
 		
-		return userDto;
+		return userDTO;
 	}
 	
-	public void addContact(UserDto user) {
+	public void addContact(UserDTO user) {
 		if(user.getAlternativeContacts() == null) {
 			user.setAlternativeContacts(new ArrayList<>());
 		}
 		user.getAlternativeContacts().add(new Contact());
 	}
 	
-	public void removeContact(UserDto user, int index) {
+	public void removeContact(UserDTO user, int index) {
 		user.getAlternativeContacts().remove(index);
 	}
 	

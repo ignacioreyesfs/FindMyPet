@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.controller.ResourceNotFoundException;
-import com.ireyes.findMyPet.exception.InvalidTokenException;
-import com.ireyes.findMyPet.exception.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.model.user.User;
 import com.ireyes.findMyPet.model.user.register.RegistrationCompleteEvent;
 import com.ireyes.findMyPet.service.user.EmailAlreadyExists;
+import com.ireyes.findMyPet.service.user.InvalidTokenException;
 import com.ireyes.findMyPet.service.user.RegisterDTO;
+import com.ireyes.findMyPet.service.user.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.service.user.UserAlreadyExistsException;
 import com.ireyes.findMyPet.service.user.UserService;
 

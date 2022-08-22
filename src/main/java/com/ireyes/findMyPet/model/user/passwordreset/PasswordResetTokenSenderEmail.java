@@ -8,7 +8,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.ireyes.findMyPet.exception.CannotSendTokenException;
 import com.ireyes.findMyPet.model.email.EmailService;
 
 @Component

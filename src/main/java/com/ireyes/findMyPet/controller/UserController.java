@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ireyes.findMyPet.model.user.ContactType;
 import com.ireyes.findMyPet.service.post.PostService;
 import com.ireyes.findMyPet.service.user.PasswordDTO;
-import com.ireyes.findMyPet.service.user.UserDto;
+import com.ireyes.findMyPet.service.user.UserDTO;
 import com.ireyes.findMyPet.service.user.UserService;
 
 @Controller
@@ -72,7 +72,7 @@ public class UserController {
 	
 	@GetMapping("/user/edit/info")
 	public String showEditInfo(Model model, Principal principal) {
-		UserDto user = userService.findDtoByUsername(principal.getName()).orElseThrow();
+		UserDTO user = userService.findDtoByUsername(principal.getName()).orElseThrow();
 		
 		model.addAttribute("user", user);
 		model.addAttribute("contactTypes", Arrays.asList(ContactType.values()));
@@ -81,7 +81,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/edit/info")
-	public String updateUserInfo(@Valid @ModelAttribute UserDto user, BindingResult bindingResult, Model model, Principal principal) {
+	public String updateUserInfo(@Valid @ModelAttribute UserDTO user, BindingResult bindingResult, Model model, Principal principal) {
 		if(principal == null || !user.getUsername().equals(principal.getName())) {
 			throw new AccessDeniedException("User is not " + user.getUsername());
 		}
@@ -98,7 +98,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/edit/addContact")
-	public String addContact(@ModelAttribute UserDto user, Model model) {
+	public String addContact(@ModelAttribute UserDTO user, Model model) {
 		userService.addContact(user);
 		model.addAttribute("contactTypes", Arrays.asList(ContactType.values()));
 		model.addAttribute("user", user);
@@ -106,7 +106,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/edit/removeContact")
-	public String removeContact(@ModelAttribute UserDto user, @RequestParam("row") Integer contactIndex, Model model) {
+	public String removeContact(@ModelAttribute UserDTO user, @RequestParam("row") Integer contactIndex, Model model) {
 		userService.removeContact(user, contactIndex.intValue());
 		model.addAttribute("contactTypes", Arrays.asList(ContactType.values()));
 		model.addAttribute("user", user);

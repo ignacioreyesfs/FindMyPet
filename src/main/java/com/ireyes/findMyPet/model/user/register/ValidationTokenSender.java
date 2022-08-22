@@ -1,6 +1,6 @@
 package com.ireyes.findMyPet.model.user.register;
 
-import com.ireyes.findMyPet.exception.CannotSendTokenException;
+import com.ireyes.findMyPet.model.user.passwordreset.CannotSendTokenException;
 
 public interface ValidationTokenSender {
 	void sendValidationToken(String contact, String token) throws CannotSendTokenException;

@@ -8,8 +8,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.ireyes.findMyPet.exception.CannotSendTokenException;
 import com.ireyes.findMyPet.model.email.EmailService;
+import com.ireyes.findMyPet.model.user.passwordreset.CannotSendTokenException;
 
 @Component
 public class ValidationTokenSenderEmail implements ValidationTokenSender{

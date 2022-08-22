@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import com.ireyes.findMyPet.model.user.Contact;
 import com.ireyes.findMyPet.validation.ValidUserContacts;
 
-public class UserDto {
+public class UserDTO {
 	@NotEmpty
 	private String username;
 	private String firstName;
