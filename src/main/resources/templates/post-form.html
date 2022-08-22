@@ -33,10 +33,14 @@
 			<div id="petInfo" style="border: thin solid grey; padding: 1px;">
 				<span>Pet Information</span>
 				<div id="searchGroup" hidden>
+			        <span th:if="${#fields.hasErrors('pet.name')}" th:errorclass="text-danger" th:errors="*{pet.name}" 
+       					th:text="${err}"></span>
 					<div class="input-group mb-3">
 						<span class="input-group-text">Name</span>
 						<input class="form-control" th:field="*{pet.name}" type="text" maxlength="10"/>
 					</div>
+			        <span th:if="${#fields.hasErrors('pet.age')}" th:errorclass="text-danger" th:errors="*{pet.age}" 
+       					th:text="${err}"></span>
 					<div class="input-group mb-3">
 						<span class="input-group-text">Years</span>
 						<input class="form-control" th:field="*{pet.age}" inputmode="numeric" maxlength="2"/>

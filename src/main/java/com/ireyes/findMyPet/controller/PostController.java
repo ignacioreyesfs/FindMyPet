@@ -113,6 +113,7 @@ public class PostController {
 		
 		if(br.hasErrors()) {
 			logger.info("createPost binding results: " + br.toString());
+			model.addAttribute(BindingResult.MODEL_KEY_PREFIX+"post", br);
 			fillPostFormModel(post, isUpdate? "Update Post": "Create Post", model);
 			if(isUpdate) {
 				model.addAttribute("isUpdate", true);
