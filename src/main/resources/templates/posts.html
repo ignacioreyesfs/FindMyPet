@@ -40,9 +40,7 @@
 		  	<option value="">All</option>
 		    <option th:each="petType: ${petTypes}" th:value="${petType.name}" th:text="${petType.name}"></option>
 		  </select>
-	  </div>
-	  <div class="input-group mb-3">
-		  <span class="input-group-text">Breed</span>
+  		  <span class="input-group-text">Breed</span>
 		  <select class="form-control" id="breed" th:name="breed" th:field="${filter.breed}">
 		  </select>
 	  </div>
@@ -52,14 +50,10 @@
 		  	<option value="">All</option>
 		    <option th:each="country: ${countries}" th:value="${country}" th:text="${country}"></option>
 		  </select>
-	  </div>
-	  <div class="input-group mb-3">
-		  <span class="input-group-text">Province</span>
+  		  <span class="input-group-text">Province</span>
 		  <select class="form-control" id="region" th:name="region" th:field="${filter.region}">
 		  </select>
-	  </div>
-	  <div class="input-group mb-3">
-		  <span class="input-group-text">Area</span>
+  		  <span class="input-group-text">Area</span>
 		  <select class="form-control" id="subregion" th:name="subregion"
 		  		th:field="${filter.subRegion}">
 		  </select>
