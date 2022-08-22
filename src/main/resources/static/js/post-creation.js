@@ -2,6 +2,9 @@ $(document).ready(loadBreeds);
 $(document).ready(loadRegions);
 $(document).ready(loadSubRegions);
 $(document).ready(displayExtraFields);
+$(document).ready(() => {
+	$('#date').prop("max", new Date().toISOString().split("T")[0]);
+})
 
 $('#petType').change(loadBreeds);
 
