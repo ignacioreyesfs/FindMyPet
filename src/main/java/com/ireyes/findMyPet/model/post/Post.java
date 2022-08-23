@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,15 +29,14 @@ public abstract class Post {
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true, optional = false)
 	private Pet pet;
 	private String description;
 	@ManyToOne
 	@JoinColumn(name="location_id")
 	private Location location;
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-	@JoinColumn(name="user_id", 
-		foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"))
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name="user_id")
 	private User user;
 	@Temporal(TemporalType.DATE)
 	private Date date;

@@ -37,6 +37,7 @@ import com.ireyes.findMyPet.model.user.passwordreset.PasswordResetTokenSender;
 import com.ireyes.findMyPet.model.user.register.OnValidationTokenExpire;
 import com.ireyes.findMyPet.model.user.register.ValidationToken;
 import com.ireyes.findMyPet.model.user.register.ValidationTokenSender;
+import com.ireyes.findMyPet.service.post.PostService;
 
 @Service
 public class UserService implements UserDetailsService{
@@ -59,6 +60,8 @@ public class UserService implements UserDetailsService{
 	private ThreadPoolTaskScheduler taskScheduler;
 	@Autowired
 	private ApplicationContext context;
+	@Autowired
+	private PostService postService;
 	
 	@Transactional
 	public Optional<User> findByUsername(String username){
@@ -240,6 +243,8 @@ public class UserService implements UserDetailsService{
 	
 	@Transactional
 	public void delete(String username) {
+		User user = userRepo.findByUsername(username).orElseThrow();
+		postService.deleteByUser(user);
 		userRepo.deleteByUsername(username);
 	}
 

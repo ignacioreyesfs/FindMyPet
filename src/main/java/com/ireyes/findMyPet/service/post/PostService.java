@@ -24,6 +24,7 @@ import com.ireyes.findMyPet.model.post.Found;
 import com.ireyes.findMyPet.model.post.Post;
 import com.ireyes.findMyPet.model.post.PostFactory;
 import com.ireyes.findMyPet.model.post.Search;
+import com.ireyes.findMyPet.model.user.User;
 import com.ireyes.findMyPet.service.storage.StorageService;
 
 @Service
@@ -135,6 +136,9 @@ public class PostService {
 	
 	@Transactional
 	public void deleteById(Long id) {
+		postRepo.findById(id).ifPresent(
+			post -> post.getPet().getImagesFilenames().forEach(filename -> storageService.delete(filename)));
+		
 		postRepo.deleteById(id);
 	}
 	
@@ -161,6 +165,13 @@ public class PostService {
 		}
 		
 		return postDTO;
+	}
+	
+	@Transactional
+	public void deleteByUser(User user) {
+		List<Post> posts = postRepo.findByUser(user);
+		posts.forEach(post -> post.getPet().getImagesFilenames().forEach(filename -> storageService.delete(filename)));
+		postRepo.deleteAll(posts);
 	}
 
 }

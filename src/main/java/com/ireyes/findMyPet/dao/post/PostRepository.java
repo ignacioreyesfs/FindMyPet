@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ireyes.findMyPet.model.post.Post;
+import com.ireyes.findMyPet.model.user.User;
 
 @Repository
 public interface PostRepository<T extends Post> extends JpaRepository<T, Long>{
@@ -36,4 +37,6 @@ public interface PostRepository<T extends Post> extends JpaRepository<T, Long>{
 			@Param("dateFrom")Date dateFrom, Pageable pageable);
 	
 	public List<Post> findByUser_Username(String username);
+	
+	public List<Post> findByUser(User user);
 }
