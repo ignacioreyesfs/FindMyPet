@@ -1,7 +1,6 @@
 package com.ireyes.findMyPet.config;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +23,6 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler{
 			redirect = (String)session.getAttribute("url_prior_login");
 			session.removeAttribute("url_prior_login");
 		}
-		
-		Logger.getGlobal().info("last url: " + redirect);
 		
 		if(redirect == null || redirect.contains("/change-password") || redirect.contains("/confirm-account")) {
 			redirect = "/";

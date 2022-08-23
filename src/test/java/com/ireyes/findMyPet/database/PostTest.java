@@ -18,6 +18,7 @@ import com.ireyes.findMyPet.model.pet.PetType;
 import com.ireyes.findMyPet.model.post.Found;
 import com.ireyes.findMyPet.model.post.Post;
 import com.ireyes.findMyPet.model.post.Search;
+import com.ireyes.findMyPet.model.user.User;
 
 @DataJpaTest
 public class PostTest {
@@ -40,27 +41,32 @@ public class PostTest {
 		Pet tommy = new Pet("tommy", 1, poodle, "");
 		Pet dora = new Pet("dora", 9, caneCorso, "");
 		Pet etzio = new Pet("etzio", 7, poodle, "");
+		Pet eco = new Pet("eco", 4, caneCorso, "");
 		
 		Found tommyFound = new Found();
 		tommyFound.setPet(tommy);
+		tommyFound.setUser(new User());
 		calendar.set(2022, Calendar.JANUARY, 1);
 		tommyFound.setDate(calendar.getTime());
 		Found doraFound = new Found();
 		doraFound.setPet(dora);
 		calendar.set(2022, Calendar.MARCH, 1);
 		doraFound.setDate(calendar.getTime());
+		doraFound.setUser(new User());
 		Found etzioFound = new Found();
 		etzioFound.setPet(etzio);
 		calendar.set(2022, Calendar.FEBRUARY, 1);
 		etzioFound.setDate(calendar.getTime());
-		Search doraSearch = new Search();
-		doraSearch.setPet(dora);
+		etzioFound.setUser(new User());
+		Search ecoSearch = new Search();
+		ecoSearch.setPet(eco);
+		ecoSearch.setUser(new User());
 		calendar.set(2022, Calendar.JUNE, 1);
-		doraSearch.setDate(calendar.getTime());
+		ecoSearch.setDate(calendar.getTime());
 		
 		postRepository.save(tommyFound);
 		postRepository.save(doraFound);
-		postRepository.save(doraSearch);
+		postRepository.save(ecoSearch);
 		postRepository.saveAndFlush(etzioFound);
 	}
 	

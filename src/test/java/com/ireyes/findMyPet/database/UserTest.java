@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.ireyes.findMyPet.dao.UserRepository;
 import com.ireyes.findMyPet.dao.post.PostRepository;
+import com.ireyes.findMyPet.model.pet.Pet;
 import com.ireyes.findMyPet.model.post.Found;
 import com.ireyes.findMyPet.model.post.Post;
 import com.ireyes.findMyPet.model.post.Search;
@@ -33,17 +34,21 @@ public class UserTest {
 		Search dogSearch = new Search();
 		dogSearch.setDate(calendar.getTime());
 		dogSearch.setUser(carl);
+		dogSearch.setPet(new Pet());
 		Search doraSearch = new Search();
 		doraSearch.setDate(calendar.getTime());
 		doraSearch.setUser(glen);
+		doraSearch.setPet(new Pet());
 		Found dogFound = new Found();
 		calendar.add(Calendar.MONTH, -2);
 		dogFound.setDate(calendar.getTime());
 		dogFound.setUser(glen);
+		dogFound.setPet(new Pet());
 		Found doraFound = new Found();
 		calendar.add(Calendar.YEAR, -1);
 		doraFound.setDate(calendar.getTime());
 		doraFound.setUser(rick);
+		doraFound.setPet(new Pet());
 		
 		postRepo.save(dogSearch);
 		postRepo.save(doraSearch);
