@@ -31,7 +31,7 @@ public class EmailConfig {
 	public SimpleMailMessage passwordResetTemplate() {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setSubject("Password Reset");
-		message.setText("Hi, \n\nUse the following code to reset your FindMyPet password:\n\n"
+		message.setText("Hi %s, \n\nUse the following code to reset your FindMyPet password:\n\n"
 				+ "%s\n\nDo not share this code with anyone else, will expire in a few minutes.\n"
 				+ "If you did not require a password reset, ignore this email.\n\n"
 				+ "Yours sincerely, FindMyDog.");

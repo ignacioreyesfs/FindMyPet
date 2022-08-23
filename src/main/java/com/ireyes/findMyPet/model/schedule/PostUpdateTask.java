@@ -35,7 +35,7 @@ public class PostUpdateTask {
 	
 	private void sendUpdateRequest(User user) {
 		String email = user.getEmail();
-		String name = user.getFirstName() != null? user.getFirstName(): "";
+		String name = user.getUsername();
 		
 		if(email != null) {
 			String text = String.format(template.getText(), name);
