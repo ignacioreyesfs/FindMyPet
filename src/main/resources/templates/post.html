@@ -8,7 +8,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-	<div class="container my-3">
+	<div class="container mb-3">
+	  <div th:replace="fragments/navbar"></div>
    	  <div th:if="${updated != null || created != null}" class="alert alert-success col-xs-offset-1 col-xs-10">
 		<span th:text="${'Post ' + (updated != null? 'edited':'created') + ' successfully'}"></span>
 	  </div>

@@ -9,13 +9,8 @@
 <link rel="stylesheet" th:href="@{/css/user.css}" />
 </head>
 <body>
-	<div class="container my-3">
-	  <nav aria-label="breadcrumb">
-	    <ol class="breadcrumb">
-	      <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-	      <li class="breadcrumb-item active" aria-current="page">Profile</li>
-	    </ol>
-	  </nav>
+	<div class="container mb-3">
+	  <div th:replace="fragments/navbar"></div>
 	  
 	  <div style="text-align: center;display: flex;align-items: center;justify-content: center;">
 	    <h2 sec:authentication="name"></h2>
@@ -23,9 +18,6 @@
 	      <i style="font-size:24px" class="fa ms-3">&#xf013;</i>
           <div class="dropdown-content">
 		    <a th:href="@{/user/edit/password}">Change Password</a>
-		    <form method="POST" th:action="@{/logout}">
-		    	<button type="submit" name="submit" class="list-group-item list-group-item-action">Log out</button>
-		    </form>
 		  </div>
 	    </div>
 	  </div>
@@ -62,7 +54,7 @@
         </div>
       </div>
 	</div>
-	<div class="container" >
+	<div class="container mb-3" >
 	  <div style="border-radius: 5px;padding: 10px;background-color: #f2f2f2;">
 	    <h5 class="mb-3">Created posts</h5>
 	    <div style="text-align: center;">

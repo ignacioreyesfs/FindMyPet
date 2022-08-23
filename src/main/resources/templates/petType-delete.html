@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Pet Type Deletion</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<title>Delete Pet Type</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container my-3">
+<div class="container mb-3">
+	<div th:replace="fragments/navbar"></div>
 	<form th:action="@{/admin/petType/delete}" method="POST" th:object="${petType}">
-	  <div class="form-group">
+	  <div class="form-group mb-2">
 	    <label for="petType">Pet Type:</label>
 		<select class="form-control" required id="petType" th:field="*{id}">
 			<option value="" hidden>Select</option>

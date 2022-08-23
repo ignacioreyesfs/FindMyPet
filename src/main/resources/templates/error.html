@@ -12,14 +12,12 @@
 </head>
 
 <body>
-	<div class="container my-3">
-	    <nav aria-label="breadcrumb">
-	      <ol class="breadcrumb">
-	        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-	        <li class="breadcrumb-item active" aria-current="page">Error</li>
-	      </ol>
-	    </nav>
-		<h2 class="" th:text="${status + ' ' + error}">ERROR</h2>
+	<div class="container mb-3">
+		<div th:replace="fragments/navbar"></div>
+		<div style="text-align: center;">
+			<h2>ERROR</h2>
+			<h2 th:text="${status + ' ' + error}">ERROR</h2>
+		</div>
 	</div>
 </body>
 

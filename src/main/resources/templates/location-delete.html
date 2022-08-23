@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Pet Type Deletion</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<title>Delete Location</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-<div class="container my-3">
+<div class="container mb-3">
+	<div th:replace="fragments/navbar"></div>
 	<form th:action="@{/admin/location/delete}" method="POST" th:object="${location}">
-		<div class="form-group">
+		<div class="form-group mb-3">
 			<label for="country">Country:</label>
 			<select class="form-control" required id="country">
 				<option value="" hidden>Select</option>
@@ -18,13 +19,13 @@
 					th:text="${country}"></option>
 			</select>
 		</div>
-		<div class="form-group">
+		<div class="form-group mb-3">
 			<label for="region">Province:</label>
 			<select class="form-control" disabled required id="region">
 				<option value="" hidden>Select</option>
 			</select>
 		</div>
-		<div class="form-group">
+		<div class="form-group mb-2">
 			<label for="subregion">Area:</label>
 			<select class="form-control" disabled th:field="*{id}" required id="subregion">
 				<option value="" hidden>Select</option>

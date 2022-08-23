@@ -10,73 +10,67 @@
 </head>
 <body>
 
-<div class="container my-3">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Posts</li>
-      </ol>
-    </nav>
-
+<div class="container mb-3">
+	<div th:replace="fragments/navbar"></div>
  	<div th:if="${postCreated}" class="alert alert-success col-xs-offset-1 col-xs-10">
 		<span>Post created successfully</span>
 	</div>
 	<a class="btn btn-success" th:href="@{/posts/new}" role="button" style="margin:10px 0 10px 0">Create Post</a>
 
-<form th:action="@{/posts}" id="filterForm">
-  <fieldset>
-	  <legend>Search filters</legend>
-	  <div class="input-group mb-3">
-		  <span class="input-group-text">Post type</span>
-		  <select class="form-control" id="postType" th:name="postType" th:field="${filter.postType}">
-		  	<option value="">All</option>
-		    <option value="search">Search</option>
-		    <option value="found">Found</option>
-		  </select>
-	  </div>
-	  <div class="input-group mb-3">
-  		  <span class="input-group-text">Pet type</span>
-		  <select class="form-control" id="petType" th:name="petType" th:field="${filter.petType}">
-		  	<option value="">All</option>
-		    <option th:each="petType: ${petTypes}" th:value="${petType.name}" th:text="${petType.name}"></option>
-		  </select>
-  		  <span class="input-group-text">Breed</span>
-		  <select class="form-control" id="breed" th:name="breed" th:field="${filter.breed}">
-		  </select>
-	  </div>
-	  <div class="input-group mb-3">
-		  <span class="input-group-text">Country</span>
-		  <select class="form-control" id="country" th:field="${filter.country}">
-		  	<option value="">All</option>
-		    <option th:each="country: ${countries}" th:value="${country}" th:text="${country}"></option>
-		  </select>
-  		  <span class="input-group-text">Province</span>
-		  <select class="form-control" id="region" th:name="region" th:field="${filter.region}">
-		  </select>
-  		  <span class="input-group-text">Area</span>
-		  <select class="form-control" id="subregion" th:name="subregion"
-		  		th:field="${filter.subRegion}">
-		  </select>
-	  </div>
-	  
-	  <div class="input-group mb-3">
-		  <span class="input-group-text">Date from</span>
-		  <input id="date" class="form-control" type="date" th:name="date" th:field="${filter.dateFrom}"/>
-	  </div>
-	  
-	  <div class="input-group mb-3" hidden id="foundGroup">
-		  <span class="input-group-text">Relocation Urgency</span>
-		  <select class="form-control" id="relocation" th:name="relocation"
-		  		th:field="${filter.relocation}">
-		  	<option value="">All</option>
-		  	<option th:each="relocation: ${relocations}" th:value="${relocation}" th:text="${relocation}"></option>
-		  </select>
-	  </div>
-	  
-	  <button type="submit" class="btn btn-primary">Search</button>
-	  <a th:href="@{/posts}" class="btn btn-light">Clear filters</a>
-  </fieldset>
-</form>
+	<form th:action="@{/posts}" id="filterForm">
+	  <fieldset>
+		  <legend>Search filters</legend>
+		  <div class="input-group mb-3">
+			  <span class="input-group-text">Post type</span>
+			  <select class="form-control" id="postType" th:name="postType" th:field="${filter.postType}">
+			  	<option value="">All</option>
+			    <option value="search">Search</option>
+			    <option value="found">Found</option>
+			  </select>
+		  </div>
+		  <div class="input-group mb-3">
+	  		  <span class="input-group-text">Pet type</span>
+			  <select class="form-control" id="petType" th:name="petType" th:field="${filter.petType}">
+			  	<option value="">All</option>
+			    <option th:each="petType: ${petTypes}" th:value="${petType.name}" th:text="${petType.name}"></option>
+			  </select>
+	  		  <span class="input-group-text">Breed</span>
+			  <select class="form-control" id="breed" th:name="breed" th:field="${filter.breed}">
+			  </select>
+		  </div>
+		  <div class="input-group mb-3">
+			  <span class="input-group-text">Country</span>
+			  <select class="form-control" id="country" th:field="${filter.country}">
+			  	<option value="">All</option>
+			    <option th:each="country: ${countries}" th:value="${country}" th:text="${country}"></option>
+			  </select>
+	  		  <span class="input-group-text">Province</span>
+			  <select class="form-control" id="region" th:name="region" th:field="${filter.region}">
+			  </select>
+	  		  <span class="input-group-text">Area</span>
+			  <select class="form-control" id="subregion" th:name="subregion"
+			  		th:field="${filter.subRegion}">
+			  </select>
+		  </div>
+		  
+		  <div class="input-group mb-3">
+			  <span class="input-group-text">Date from</span>
+			  <input id="date" class="form-control" type="date" th:name="date" th:field="${filter.dateFrom}"/>
+		  </div>
+		  
+		  <div class="input-group mb-3" hidden id="foundGroup">
+			  <span class="input-group-text">Relocation Urgency</span>
+			  <select class="form-control" id="relocation" th:name="relocation"
+			  		th:field="${filter.relocation}">
+			  	<option value="">All</option>
+			  	<option th:each="relocation: ${relocations}" th:value="${relocation}" th:text="${relocation}"></option>
+			  </select>
+		  </div>
+		  
+		  <button type="submit" class="btn btn-primary">Search</button>
+		  <a th:href="@{/posts}" class="btn btn-light">Clear filters</a>
+	  </fieldset>
+	</form>
 </div>
 
 <div class="container">
