@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,9 +33,10 @@ public class User {
 	@JoinColumn(name="user_id")
 	private List<Contact> alternativeContacts;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinTable(name="users_roles", joinColumns = @JoinColumn(name="user_id"),
-			inverseJoinColumns = @JoinColumn(name="role_id"))
+			inverseJoinColumns = @JoinColumn(name="role_id"), 
+			foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"))
 	private List<Role> roles;
 	
 	public User() {

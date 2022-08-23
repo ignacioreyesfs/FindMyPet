@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,7 +30,8 @@ public class Pet {
 	private Breed breed;
 	private String description;
 	@ElementCollection(fetch = FetchType.LAZY)
-	@CollectionTable(name="pet_images", joinColumns = @JoinColumn(name="pet_id"))
+	@CollectionTable(name="pet_images", joinColumns = @JoinColumn(name="pet_id"), 
+		foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (pet_id) REFERENCES pet(id) ON DELETE CASCADE"))
 	@Column(name="image")
 	private List<String> imagesFilenames;
 	

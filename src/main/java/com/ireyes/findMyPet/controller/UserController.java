@@ -2,11 +2,13 @@ package com.ireyes.findMyPet.controller;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +32,7 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private PostService postService;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	@GetMapping("/user")
 	public String showProfile(Model model, Principal principal) {
@@ -159,4 +162,13 @@ public class UserController {
 		
 		return "redirect:/login";
 	}
+	
+	@PostMapping("/user/delete")
+	public String deleteAccount(Principal principal) {
+		userService.delete(principal.getName());
+		logger.info("Deleted user " + principal.getName());
+		SecurityContextHolder.getContext().setAuthentication(null);
+		return "redirect:/";
+	}
+	
 }

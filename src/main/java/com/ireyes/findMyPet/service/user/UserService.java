@@ -237,6 +237,11 @@ public class UserService implements UserDetailsService{
 		userRepo.save(user);
 		passwordResetTokenRepo.delete(pwResetToken);
 	}
+	
+	@Transactional
+	public void delete(String username) {
+		userRepo.deleteByUsername(username);
+	}
 
 	@Override
 	@Transactional

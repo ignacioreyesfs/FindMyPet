@@ -18,6 +18,9 @@
 	      <i style="font-size:24px" class="fa ms-3">&#xf013;</i>
           <div class="dropdown-content">
 		    <a th:href="@{/user/edit/password}">Change Password</a>
+    	    <form method="POST" th:action="@{/user/delete}" onsubmit="return confirm('Confirm ACCOUNT deletion?');">
+		    	<button type="submit" name="submit" class="list-group-item list-group-item-action">Delete Account</button>
+		    </form>
 		  </div>
 	    </div>
 	  </div>

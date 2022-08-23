@@ -3,6 +3,7 @@ package com.ireyes.findMyPet.model.user.register;
 import java.util.Calendar;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,7 +19,8 @@ public class ValidationToken {
 	private Long id;
 	private String token;
 	@OneToOne
-	@JoinColumn(nullable = false, name="user_id")
+	@JoinColumn(nullable = false, name="user_id", 
+			foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"))
 	private User user;
 	private long expirationDate;
 	
