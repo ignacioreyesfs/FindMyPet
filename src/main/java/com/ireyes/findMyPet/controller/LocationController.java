@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,12 +26,14 @@ public class LocationController {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	@GetMapping("/admin/location/new")
+	@Secured("ROLE_ADMIN")
 	public String showCreateLocation(Model model) {
 		model.addAttribute("location", new Location());
 		return "location-form";
 	}
 	
 	@PostMapping("/admin/location/new")
+	@Secured("ROLE_ADMIN")
 	public String createLocation(@ModelAttribute(name="location")Location location, BindingResult br) {
 		if(br.hasErrors()) {
 			return "location-form";
@@ -42,6 +45,7 @@ public class LocationController {
 	}
 	
 	@GetMapping("/admin/location/delete")
+	@Secured("ROLE_ADMIN")
 	public String showDeleteLocation(Model model) {
 		model.addAttribute("countries", locationService.findAllCountries());
 		model.addAttribute("location", new Location());
@@ -49,6 +53,7 @@ public class LocationController {
 	}
 	
 	@PostMapping("/admin/location/delete")
+	@Secured("ROLE_ADMIN")
 	public String deleteLocation(@ModelAttribute Location location, RedirectAttributes redirect) {
 		try {
 			locationService.deleteLocation(location);

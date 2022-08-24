@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +36,7 @@ public class UserController {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	@GetMapping("/user")
+	@Secured("ROLE_USER")
 	public String showProfile(Model model, Principal principal) {
 		model.addAttribute("user", userService.findByUsername(principal.getName()).orElseThrow());
 		model.addAttribute("posts", postService.findByUsername(principal.getName()));
@@ -42,6 +44,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/user/edit/password")
+	@Secured("ROLE_USER")
 	public String showEditPassword(Principal principal, Model model) {
 	    if (!model.containsAttribute(PASSWORD_ATTR)) {
 	        model.addAttribute(PASSWORD_ATTR, new PasswordDTO());
@@ -51,6 +54,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/edit/password")
+	@Secured("ROLE_USER")
 	public String changePassword(@RequestParam String actualPassword, @Valid @ModelAttribute PasswordDTO newPassword,
 			BindingResult br, RedirectAttributes redirect, Principal principal) {
 		
@@ -74,6 +78,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/user/edit/info")
+	@Secured("ROLE_USER")
 	public String showEditInfo(Model model, Principal principal) {
 		UserDTO user = userService.findDtoByUsername(principal.getName()).orElseThrow();
 		
@@ -84,8 +89,9 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/edit/info")
+	@Secured("ROLE_USER")
 	public String updateUserInfo(@Valid @ModelAttribute UserDTO user, BindingResult bindingResult, Model model, Principal principal) {
-		if(principal == null || !user.getUsername().equals(principal.getName())) {
+		if(!user.getUsername().equals(principal.getName())) {
 			throw new AccessDeniedException("User is not " + user.getUsername());
 		}
 		
@@ -101,6 +107,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/edit/addContact")
+	@Secured("ROLE_USER")
 	public String addContact(@ModelAttribute UserDTO user, Model model) {
 		userService.addContact(user);
 		model.addAttribute("contactTypes", Arrays.asList(ContactType.values()));
@@ -109,6 +116,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/edit/removeContact")
+	@Secured("ROLE_USER")
 	public String removeContact(@ModelAttribute UserDTO user, @RequestParam("row") Integer contactIndex, Model model) {
 		userService.removeContact(user, contactIndex.intValue());
 		model.addAttribute("contactTypes", Arrays.asList(ContactType.values()));
@@ -164,6 +172,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/delete")
+	@Secured("ROLE_USER")
 	public String deleteAccount(Principal principal) {
 		userService.delete(principal.getName());
 		logger.info("Deleted user " + principal.getName());

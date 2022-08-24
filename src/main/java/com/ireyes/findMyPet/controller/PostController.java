@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -88,12 +89,9 @@ public class PostController {
 	
 	// creation
 	@GetMapping("/new")
+	@Secured("ROLE_USER")
 	public String showCreatePost(Model model, Principal principal) {
 		PostDTO post = new PostDTO();
-		
-		if(principal == null) {
-			throw new AccessDeniedException("Cannot create a post without user");
-		}
 		
 		post.setUser(userService.findByUsername(principal.getName()).get());
 		fillPostFormModel(post, "Create Post", model);
@@ -102,6 +100,7 @@ public class PostController {
 	}
 	
 	@PostMapping("/save")
+	@Secured("ROLE_USER")
 	public String createPost(@Valid @ModelAttribute PostDTO post, BindingResult br, Model model,
 			RedirectAttributes redirectAttr, Principal principal) {
 		boolean isUpdate = post.getId() != null;
@@ -146,10 +145,11 @@ public class PostController {
 	}
 	
 	@GetMapping("/edit/{id}")
+	@Secured("ROLE_USER")
 	public String showUpdatePost(@PathVariable Long id, Model model, Principal principal) {
 		PostDTO post = postService.findById(id).orElseThrow(ResourceNotFoundException::new);
 		
-		if(principal == null || !post.getUser().getUsername().equals(principal.getName())) {
+		if(!post.getUser().getUsername().equals(principal.getName())) {
 			logger.info("access denied to user " + (principal != null? principal.getName(): "Anonymous"));
 			throw new AccessDeniedException("Post is not from the current user");
 		}
@@ -161,10 +161,11 @@ public class PostController {
 	}
 	
 	@PostMapping("/delete/{id}")
+	@Secured("ROLE_USER")
 	public String deletePost(@PathVariable Long id, @RequestParam(required = false) String redirectUrl, Principal principal) {
 		PostDTO post = postService.findById(id).orElseThrow();
 		
-		if(principal == null || !principal.getName().equals(post.getUser().getUsername())) {
+		if(!principal.getName().equals(post.getUser().getUsername())) {
 			logger.severe("Invalid post delete request from " + (principal != null? principal.getName(): "Anon"));
 			throw new AccessDeniedException("Invalid post delete request");
 		}

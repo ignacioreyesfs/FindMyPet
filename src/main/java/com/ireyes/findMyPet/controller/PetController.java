@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,12 +33,14 @@ public class PetController {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	@GetMapping("/admin/petType/new")
+	@Secured("ROLE_ADMIN")
 	public String showCreatePetType(Model model) {
 		model.addAttribute("petType", new PetType());
 		return "petType-form";
 	}
 	
 	@PostMapping("/admin/petType/new")
+	@Secured("ROLE_ADMIN")
 	public String createPetType(@ModelAttribute(name = "petType")PetType petType, BindingResult br) {
 		if(br.hasErrors()) {
 			return "petType-form";
@@ -49,6 +52,7 @@ public class PetController {
 	}
 	
 	@GetMapping("/admin/petType/delete")
+	@Secured("ROLE_ADMIN")
 	public String showDeletePetType(Model model) {
 		model.addAttribute("petType", new PetType());
 		model.addAttribute("petTypes", petService.findAllPetTypes());
@@ -56,6 +60,7 @@ public class PetController {
 	}
 	
 	@PostMapping("/admin/petType/delete")
+	@Secured("ROLE_ADMIN")
 	public String deletePetType(@ModelAttribute PetType petType, RedirectAttributes redirect) {
 		try {
 			petService.deletePetType(petType);
@@ -68,6 +73,7 @@ public class PetController {
 	}
 	
 	@GetMapping("/admin/breed/new")
+	@Secured("ROLE_ADMIN")
 	public String showCreateBreed(Model model) {
 		model.addAttribute("petTypes", petService.findAllPetTypes());
 		model.addAttribute("breed", new Breed());
@@ -75,6 +81,7 @@ public class PetController {
 	}
 	
 	@PostMapping("/admin/breed/new")
+	@Secured("ROLE_ADMIN")
 	public String createBreed(@ModelAttribute(name="breed")Breed breed, BindingResult br, Model model) {
 		if(br.hasErrors()) {
 			model.addAttribute("petTypes", petService.findAllPetTypes());
@@ -87,6 +94,7 @@ public class PetController {
 	}
 	
 	@GetMapping("/admin/breed/delete")
+	@Secured("ROLE_ADMIN")
 	public String showDeleteBreed(Model model) {
 		model.addAttribute("petTypes", petService.findAllPetTypes());
 		model.addAttribute("breed", new Breed());
@@ -94,6 +102,7 @@ public class PetController {
 	}
 	
 	@PostMapping("/admin/breed/delete")
+	@Secured("ROLE_ADMIN")
 	public String deleteBreed(@ModelAttribute Breed breed, RedirectAttributes redirect) {
 		try {
 			petService.deleteBreed(breed);
