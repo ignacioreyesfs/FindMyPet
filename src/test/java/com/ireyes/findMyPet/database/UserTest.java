@@ -27,9 +27,9 @@ public class UserTest {
 	@Test
 	public void findUserWithOldPosts() {
 		Calendar calendar = Calendar.getInstance();
-		User carl = new User();
-		User rick = new User();
-		User glen = new User();
+		User carl = userRepo.save(new User());
+		User rick = userRepo.save(new User());
+		User glen = userRepo.save(new User());
 		
 		Search dogSearch = new Search();
 		dogSearch.setDate(calendar.getTime());
@@ -57,7 +57,7 @@ public class UserTest {
 		
 		List<User> users = userRepo.findWithPostBefore(Calendar.getInstance().getTime());
 		
-		assertThat(users).containsExactly(glen, rick);
+		assertThat(users).containsExactlyInAnyOrder(glen, rick);
 		assertThat(users.size()).isEqualTo(2);
 	}
 }

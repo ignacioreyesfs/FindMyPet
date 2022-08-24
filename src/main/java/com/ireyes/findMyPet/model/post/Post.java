@@ -35,7 +35,7 @@ public abstract class Post {
 	@ManyToOne
 	@JoinColumn(name="location_id")
 	private Location location;
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name="user_id")
 	private User user;
 	@Temporal(TemporalType.DATE)

@@ -20,6 +20,16 @@ public class Location {
 	@NotBlank
 	private String subRegion;
 	
+	public Location(String country, String region, String subRegion) {
+		this.country = country;
+		this.region = region;
+		this.subRegion = subRegion;
+	}
+	
+	public Location() {
+		
+	}
+	
 	// GETTERS AND SETTERS
 	public String getCountry() {
 		return country;

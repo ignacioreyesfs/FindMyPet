@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.ireyes.findMyPet.dao.UserRepository;
 import com.ireyes.findMyPet.dao.post.FoundRepository;
 import com.ireyes.findMyPet.dao.post.PostRepository;
 import com.ireyes.findMyPet.dao.post.SearchRepository;
@@ -28,12 +29,16 @@ public class PostTest {
 	private FoundRepository foundRepository;
 	@Autowired
 	private SearchRepository searchRepository;
+	@Autowired
+	private UserRepository userRepo;
 	
 	@BeforeEach
 	public void init() {
 		Calendar calendar = Calendar.getInstance();
 		
 		PetType dog = new PetType("dog");
+		
+		User user = userRepo.save(new User());
 		
 		Breed poodle = new Breed("poodle", dog);
 		Breed caneCorso = new Breed("cane corso", dog);
@@ -45,22 +50,22 @@ public class PostTest {
 		
 		Found tommyFound = new Found();
 		tommyFound.setPet(tommy);
-		tommyFound.setUser(new User());
+		tommyFound.setUser(user);
 		calendar.set(2022, Calendar.JANUARY, 1);
 		tommyFound.setDate(calendar.getTime());
 		Found doraFound = new Found();
 		doraFound.setPet(dora);
 		calendar.set(2022, Calendar.MARCH, 1);
 		doraFound.setDate(calendar.getTime());
-		doraFound.setUser(new User());
+		doraFound.setUser(user);
 		Found etzioFound = new Found();
 		etzioFound.setPet(etzio);
 		calendar.set(2022, Calendar.FEBRUARY, 1);
 		etzioFound.setDate(calendar.getTime());
-		etzioFound.setUser(new User());
+		etzioFound.setUser(user);
 		Search ecoSearch = new Search();
 		ecoSearch.setPet(eco);
-		ecoSearch.setUser(new User());
+		ecoSearch.setUser(user);
 		calendar.set(2022, Calendar.JUNE, 1);
 		ecoSearch.setDate(calendar.getTime());
 		
