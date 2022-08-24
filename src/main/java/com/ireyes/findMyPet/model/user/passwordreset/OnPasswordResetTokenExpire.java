@@ -22,7 +22,9 @@ public class OnPasswordResetTokenExpire implements Runnable{
 	
 	@Override
 	public void run() {
-		repo.deleteById(id);
+		if(repo.existsById(id)) {
+			repo.deleteById(id);
+		}
 		logger.info(() -> "Expired password reset token with id " + id.longValue());
 	}
 

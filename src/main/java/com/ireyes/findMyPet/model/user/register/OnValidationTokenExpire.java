@@ -22,7 +22,9 @@ public class OnValidationTokenExpire implements Runnable{
 	
 	@Override
 	public void run() {
-		repo.deleteById(id);
+		if(repo.existsById(id)) {
+			repo.deleteById(id);
+		}
 		logger.info(() -> "Expired ValidationToken with id " + id.longValue());
 	}
 
