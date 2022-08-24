@@ -12,9 +12,13 @@ import com.ireyes.findMyPet.dao.ValidationTokenRepository;
 @Scope("prototype")
 public class OnValidationTokenExpire implements Runnable{
 	private Long id;
-	@Autowired
 	private ValidationTokenRepository repo;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+	
+	@Autowired
+	public OnValidationTokenExpire(ValidationTokenRepository repo) {
+		this.repo = repo;
+	}
 	
 	@Override
 	public void run() {

@@ -12,12 +12,16 @@ import com.ireyes.findMyPet.model.email.EmailService;
 
 @Component
 public class PasswordResetTokenSenderEmail implements PasswordResetTokenSender{
-	@Autowired
 	private EmailService emailService;
-	@Autowired
-	@Qualifier("passwordResetTemplate")
 	private SimpleMailMessage template;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+	
+	@Autowired
+	public PasswordResetTokenSenderEmail(EmailService emailService, 
+			@Qualifier("passwordResetTemplate") SimpleMailMessage template) {
+		this.emailService = emailService;
+		this.template = template;
+	}
 	
 	@Override
 	public void sendPasswordResetToken(String email, String token) throws CannotSendTokenException{

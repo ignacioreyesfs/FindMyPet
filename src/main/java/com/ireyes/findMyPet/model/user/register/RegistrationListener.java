@@ -9,10 +9,14 @@ import com.ireyes.findMyPet.service.validationtoken.ValidationService;
 
 @Component
 public class RegistrationListener {
-	@Autowired
 	private ValidationTokenSender tokenSender;
-	@Autowired
 	private ValidationService validationService;
+	
+	@Autowired
+	public RegistrationListener(ValidationTokenSender tokenSender, ValidationService validationService) {
+		this.tokenSender = tokenSender;
+		this.validationService = validationService;
+	}
 	
 	@EventListener
 	public void handleEvent(RegistrationCompleteEvent event) {

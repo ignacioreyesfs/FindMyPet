@@ -13,12 +13,16 @@ import com.ireyes.findMyPet.model.user.passwordreset.CannotSendTokenException;
 
 @Component
 public class ValidationTokenSenderEmail implements ValidationTokenSender{
-	@Autowired
 	private EmailService emailService;
-	@Autowired
-	@Qualifier("registrationValidatorTemplate")
 	private SimpleMailMessage template;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+
+	@Autowired
+	public ValidationTokenSenderEmail(EmailService emailService,
+			@Qualifier("registrationValidatorTemplate") SimpleMailMessage template) {
+		this.emailService = emailService;
+		this.template = template;
+	}
 
 	@Override
 	public void sendValidationToken(String contact, String token) throws CannotSendTokenException{

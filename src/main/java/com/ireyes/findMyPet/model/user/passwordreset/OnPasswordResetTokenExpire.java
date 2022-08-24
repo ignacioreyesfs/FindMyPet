@@ -11,10 +11,14 @@ import com.ireyes.findMyPet.dao.PasswordResetTokenRepo;
 @Component
 @Scope("prototype")
 public class OnPasswordResetTokenExpire implements Runnable{
-	@Autowired
 	private PasswordResetTokenRepo repo;
 	private Long id;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+	
+	@Autowired
+	public OnPasswordResetTokenExpire(PasswordResetTokenRepo repo) {
+		this.repo = repo;
+	}
 	
 	@Override
 	public void run() {
