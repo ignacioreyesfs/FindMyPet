@@ -2,19 +2,14 @@ package com.ireyes.findMyPet.service.user;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,20 +18,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ireyes.findMyPet.controller.ResourceNotFoundException;
-import com.ireyes.findMyPet.dao.PasswordResetTokenRepo;
 import com.ireyes.findMyPet.dao.RoleRepository;
 import com.ireyes.findMyPet.dao.UserRepository;
-import com.ireyes.findMyPet.dao.ValidationTokenRepository;
 import com.ireyes.findMyPet.model.user.Contact;
 import com.ireyes.findMyPet.model.user.Role;
 import com.ireyes.findMyPet.model.user.User;
-import com.ireyes.findMyPet.model.user.passwordreset.OnPasswordResetTokenExpire;
-import com.ireyes.findMyPet.model.user.passwordreset.PasswordResetToken;
-import com.ireyes.findMyPet.model.user.passwordreset.PasswordResetTokenSender;
-import com.ireyes.findMyPet.model.user.register.OnValidationTokenExpire;
-import com.ireyes.findMyPet.model.user.register.ValidationToken;
-import com.ireyes.findMyPet.model.user.register.ValidationTokenSender;
 import com.ireyes.findMyPet.service.post.PostService;
 
 @Service
@@ -46,20 +32,8 @@ public class UserService implements UserDetailsService{
 	@Autowired
 	private RoleRepository roleRepo;
 	@Autowired
-	private ValidationTokenRepository validationTokenRepo;
-	@Autowired
 	@Lazy
 	private PasswordEncoder encoder;
-	@Autowired
-	private ValidationTokenSender validationTokenSender;
-	@Autowired
-	private PasswordResetTokenSender passwordResetTokenSender;
-	@Autowired
-	private PasswordResetTokenRepo passwordResetTokenRepo;
-	@Autowired
-	private ThreadPoolTaskScheduler taskScheduler;
-	@Autowired
-	private ApplicationContext context;
 	@Autowired
 	private PostService postService;
 	
@@ -144,101 +118,6 @@ public class UserService implements UserDetailsService{
 	
 	public void removeContact(UserDTO user, int index) {
 		user.getAlternativeContacts().remove(index);
-	}
-	
-	@Transactional
-	public ValidationToken createValidationToken(User user) {
-		ValidationToken token = new ValidationToken();
-		OnValidationTokenExpire onValidationTokenExpire = context.getBean(OnValidationTokenExpire.class);
-		
-		token.setUser(user);
-		token.setToken(UUID.randomUUID().toString());
-		token.setExpirationTime(60);
-		
-		validationTokenRepo.deleteByUser(user);
-		token = validationTokenRepo.save(token);
-		
-		onValidationTokenExpire.setId(token.getId());
-		taskScheduler.schedule(onValidationTokenExpire, new Date(token.getExpirationDate()));
-		
-		return token;
-	}
-	
-	@Transactional
-	public void validateAccount(String token) {
-		ValidationToken validationToken = validationTokenRepo.findByToken(token);
-		User user;
-		
-		if(validationToken == null || validationToken.getExpirationDate() < Calendar.getInstance().getTimeInMillis()) {
-			throw new InvalidTokenException();
-		}
-		
-		user = validationToken.getUser();
-		user.setEnabled(true);
-		
-		userRepo.save(user);		
-		validationTokenRepo.deleteById(validationToken.getId());
-	}
-	
-	@Transactional
-	public void resendAccountConfirmationToken(String email) throws ResourceNotFoundException, UserAlreadyEnabledException{
-		User user = userRepo.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
-		
-		if(user.isEnabled()) {
-			throw new UserAlreadyEnabledException();
-		}
-		
-		ValidationToken token = validationTokenRepo.findByUser(user);
-		
-		if(token == null || token.getExpirationDate() <= Calendar.getInstance().getTimeInMillis()) {
-			token = createValidationToken(user);
-		}
-		
-		validationTokenSender.sendValidationTokenAync(email, token.getToken());
-	}
-	
-	@Transactional
-	public void sendResetPasswordToken(String email) throws ResourceNotFoundException{
-		User user = userRepo.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
-		PasswordResetToken token = passwordResetTokenRepo.findByUser(user);
-		
-		if(token == null || token.getExpirationDate() <= Calendar.getInstance().getTimeInMillis()) {
-			token = createPasswordResetToken(user);
-		}
-		
-		passwordResetTokenSender.sendPasswordResetTokenAsync(email, token.getToken());		
-	}
-	
-	@Transactional
-	private PasswordResetToken createPasswordResetToken(User user) {
-		PasswordResetToken token = new PasswordResetToken();
-		OnPasswordResetTokenExpire onPasswordResetTokenExpire = context.getBean(OnPasswordResetTokenExpire.class);
-		
-		token.setUser(user);
-		token.setToken(UUID.randomUUID().toString());
-		token.setExpirationTime(10);
-		
-		passwordResetTokenRepo.deleteByUser(user);
-		token = passwordResetTokenRepo.save(token);
-		
-		onPasswordResetTokenExpire.setId(token.getId());
-		taskScheduler.schedule(onPasswordResetTokenExpire, new Date(token.getExpirationDate()));
-		
-		return token;
-	}
-	
-	@Transactional
-	public void resetPassword(String token, String newPassword) throws ResourceNotFoundException{
-		PasswordResetToken pwResetToken = passwordResetTokenRepo.findByToken(token);
-		if(pwResetToken == null || pwResetToken.getExpirationDate() <= Calendar.getInstance().getTimeInMillis()) {
-			throw new ResourceNotFoundException();
-		}
-		
-		User user = pwResetToken.getUser();
-				
-		user.setPassword(encoder.encode(newPassword));
-		userRepo.save(user);
-		passwordResetTokenRepo.delete(pwResetToken);
 	}
 	
 	@Transactional

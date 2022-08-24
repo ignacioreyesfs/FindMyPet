@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ireyes.findMyPet.model.user.ContactType;
+import com.ireyes.findMyPet.service.PasswordResetService;
 import com.ireyes.findMyPet.service.post.PostService;
 import com.ireyes.findMyPet.service.user.PasswordDTO;
 import com.ireyes.findMyPet.service.user.UserDTO;
@@ -31,6 +32,8 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private PasswordResetService passwordResetService;
 	@Autowired
 	private PostService postService;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
@@ -132,7 +135,7 @@ public class UserController {
 	@PostMapping("/password-reset")
 	public String sendPasswordReset(@RequestParam String email, Model model) {
 		try {
-			userService.sendResetPasswordToken(email);
+			passwordResetService.sendResetPasswordToken(email);
 		}catch(ResourceNotFoundException e) {
 			model.addAttribute("errorMessage", "Email does not correspond to an user");
 			return "send-password-reset";
@@ -159,7 +162,7 @@ public class UserController {
 		}
 		
 		try {
-			userService.resetPassword(code, newPassword.getValue());
+			passwordResetService.resetPassword(code, newPassword.getValue());
 		}catch(ResourceNotFoundException e) {
 			model.addAttribute("newPassword", newPassword);
 			model.addAttribute("errorMessage", "Invalid or expired token");

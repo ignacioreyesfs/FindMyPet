@@ -5,19 +5,19 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import com.ireyes.findMyPet.model.user.User;
-import com.ireyes.findMyPet.service.user.UserService;
+import com.ireyes.findMyPet.service.validationtoken.ValidationService;
 
 @Component
 public class RegistrationListener {
 	@Autowired
-	private UserService userService;
-	@Autowired
 	private ValidationTokenSender tokenSender;
+	@Autowired
+	private ValidationService validationService;
 	
 	@EventListener
 	public void handleEvent(RegistrationCompleteEvent event) {
 		User user = event.getUser();
-		ValidationToken token = userService.createValidationToken(user);
+		ValidationToken token = validationService.createValidationToken(user);
 		tokenSender.sendValidationTokenAync(user.getEmail(), token.getToken());
 	}
 }

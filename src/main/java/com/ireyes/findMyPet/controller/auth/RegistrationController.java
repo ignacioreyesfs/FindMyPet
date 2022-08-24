@@ -22,14 +22,17 @@ import com.ireyes.findMyPet.model.user.register.RegistrationCompleteEvent;
 import com.ireyes.findMyPet.service.user.EmailAlreadyExists;
 import com.ireyes.findMyPet.service.user.InvalidTokenException;
 import com.ireyes.findMyPet.service.user.RegisterDTO;
-import com.ireyes.findMyPet.service.user.UserAlreadyEnabledException;
 import com.ireyes.findMyPet.service.user.UserAlreadyExistsException;
 import com.ireyes.findMyPet.service.user.UserService;
+import com.ireyes.findMyPet.service.validationtoken.UserAlreadyEnabledException;
+import com.ireyes.findMyPet.service.validationtoken.ValidationService;
 
 @Controller
 public class RegistrationController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private ValidationService validationService;
 	@Autowired
 	private ApplicationEventPublisher eventPublisher;
 	private String signUpForm = "sign-up";
@@ -81,7 +84,7 @@ public class RegistrationController {
 	@PostMapping("/confirm-account")
 	public String confirmAccount(@RequestParam String code, Model model, RedirectAttributes redirect) {
 		try {
-			userService.validateAccount(code);
+			validationService.validateAccount(code);
 		}catch(InvalidTokenException e) {
 			model.addAttribute("errorMessage", "Invalid or expired token");
 			return "confirm-account";
@@ -100,7 +103,7 @@ public class RegistrationController {
 	@PostMapping("/resend-confirmation")
 	public String resendConfirmation(@RequestParam String email, Model model, RedirectAttributes redirect) {
 		try {
-			userService.resendAccountConfirmationToken(email);
+			validationService.resendAccountConfirmationToken(email);
 		}catch(ResourceNotFoundException e) {
 			model.addAttribute("errorMessage", "Email does not correspond to an user");
 			return "resend-confirmation";
