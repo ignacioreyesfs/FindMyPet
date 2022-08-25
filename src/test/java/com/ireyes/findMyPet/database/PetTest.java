@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.ireyes.findMyPet.dao.PetRepository;
 import com.ireyes.findMyPet.model.pet.Breed;
@@ -14,6 +15,7 @@ import com.ireyes.findMyPet.model.pet.Pet;
 import com.ireyes.findMyPet.model.pet.PetType;
 
 @DataJpaTest
+@ActiveProfiles("test")
 public class PetTest {
 	@Autowired
 	private PetRepository petRepository;
