@@ -1,0 +1,35 @@
+# FINDMYPET
+findMyPet:
+  storage:
+    location:
+      root: src/test/files
+      
+# SPRING
+server:
+  error:
+    whitelabel:
+      enabled: false
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:AZ
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: create-drop
+  mail:
+    host: smtp.gmail.com
+    password: ${EMAIL_PASSWORD}
+    username: ${EMAIL_USERNAME}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  mvc:
+    throw-exception-if-no-handler-found: true
