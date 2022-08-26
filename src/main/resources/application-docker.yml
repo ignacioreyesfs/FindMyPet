@@ -12,9 +12,9 @@ server:
       enabled: false
 spring:
   datasource:
+    url: jdbc:mysql://find-my-pet-db:3306/find_my_pet?autoReconnect=true
+    username: root
     password: ${DB_PASSWORD}
-    url: jdbc:mysql://localhost:3306/findMyPet?autoReconnect=true
-    username: ${DB_USERNAME}
   jpa:
     generate-ddl: true
     hibernate:
