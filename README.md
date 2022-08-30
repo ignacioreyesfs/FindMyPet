@@ -46,11 +46,9 @@ To run this application you need the following:
 2. Application's email account needs to be configured to send emails to users (account validation, updates, etc). To achieve this, please modify docker-compose.yml file by setting EMAIL_USERNAME and EMAIL_PASSWORD environment variables with your email account and the generated application password. You could not set it but email features will not work.
 3. Run one of the following command depending on your docker version:
 
-Docker v1
 ```sh
 docker-compose up
 ```
-Docker v2
 ```sh
 docker compose up
 ```
